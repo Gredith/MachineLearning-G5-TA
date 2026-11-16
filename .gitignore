@@ -1,0 +1,33 @@
+# Datos (no se versionan: Monitoring.csv tiene ~1,6 M filas)
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.csv
+*.parquet
+
+# Salidas generadas por los notebooks
+salidas_auditoria/
+salidas_auditoria.zip
+notebooks/salidas_auditoria/
+notebooks/salidas_auditoria.zip
+results/**/*.pkl
+results/**/*.joblib
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editores y sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+~$*
