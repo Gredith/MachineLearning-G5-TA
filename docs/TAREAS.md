@@ -16,6 +16,8 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [x] Estructura de carpetas, `.gitignore`, `requirements.txt`
 - [x] Notebook de auditoría en `notebooks/01_auditoria_datos_v2.ipynb`
 - [x] Entregable 1 (DOCX) en `docs/entregables/E1/`
+- [x] Guía de [convenciones](CONVENCIONES.md) para ramas, commits y notebooks
+- [ ] Proteger `main` en GitHub (requerir PR con una revisión) (D)
 - [ ] Agregar el PDF entregado del E1 en `docs/entregables/E1/` (D)
 - [ ] Cambiar `RUTA_TIMES`/`RUTA_MONITORING` del notebook 01 a `../data/raw/` y `DIR_SALIDA` a `../results/` (A)
 - [ ] Fijar versiones en `requirements.txt` (`pip freeze`) una vez probado el entorno (C)

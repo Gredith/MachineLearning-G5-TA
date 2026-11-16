@@ -24,6 +24,7 @@ Datos: `Times.csv` (4.707 vueltas, 45 vehículos, 27 días, 18 puntos de control
 └── docs/
     ├── CONTEXTO.md       # contexto del proyecto y registro de decisiones
     ├── TAREAS.md         # tareas pendientes hasta la entrega final
+    ├── CONVENCIONES.md   # ramas, commits, notebooks y buenas prácticas
     └── entregables/      # E1, E2 y entrega final (PDF/DOCX)
 ```
 
@@ -54,3 +55,4 @@ Jorge Vicente Mateo · Jose Gutierrez Lopez · Yaser Fernandez Ccerhuayo · Leti
 
 - [Contexto y decisiones](docs/CONTEXTO.md)
 - [Tareas pendientes](docs/TAREAS.md)
+- [Convenciones de trabajo](docs/CONVENCIONES.md) (leer antes de contribuir)
