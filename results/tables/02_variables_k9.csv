@@ -1,0 +1,53 @@
+variable,grupo,pct_faltante
+hor_inicio_sin,Horario,0.0
+hor_inicio_cos,Horario,0.0
+hor_inicio_h,Horario,0.0
+hor_dia_semana,Horario,0.0
+hor_restante,Horario,0.0
+hor_total,Horario,0.0
+hor_no_creciente,Horario,0.0
+hor_tramo_10,Horario,0.0
+hor_tramo_11,Horario,0.0
+hor_tramo_12,Horario,0.0
+hor_tramo_13,Horario,0.0
+hor_tramo_14,Horario,0.0
+hor_tramo_15,Horario,0.0
+hor_tramo_16,Horario,0.0
+hor_tramo_17,Horario,0.0
+hor_tramo_18,Horario,0.0
+atr_d_1,Atraso observado,5.64
+atr_falta_1,Atraso observado,0.0
+atr_d_2,Atraso observado,4.94
+atr_falta_2,Atraso observado,0.0
+atr_d_3,Atraso observado,8.01
+atr_falta_3,Atraso observado,0.0
+atr_d_4,Atraso observado,2.36
+atr_falta_4,Atraso observado,0.0
+atr_d_5,Atraso observado,2.39
+atr_falta_5,Atraso observado,0.0
+atr_d_6,Atraso observado,2.51
+atr_falta_6,Atraso observado,0.0
+atr_d_7,Atraso observado,2.22
+atr_falta_7,Atraso observado,0.0
+atr_d_8,Atraso observado,1.69
+atr_falta_8,Atraso observado,0.0
+atr_d_9,Atraso observado,1.86
+atr_falta_9,Atraso observado,0.0
+atr_ultimo,Atraso observado,1.45
+atr_ultimo_cont,Atraso observado,1.45
+atr_dist_ultimo,Atraso observado,0.0
+atr_media3,Atraso observado,1.59
+atr_max,Atraso observado,1.45
+atr_min,Atraso observado,1.45
+atr_pendiente,Atraso observado,1.47
+atr_n_faltantes,Atraso observado,0.0
+ctx_vehiculo,Vehículo y contexto,0.0
+ctx_lap,Vehículo y contexto,0.0
+ctx_previa_final,Vehículo y contexto,29.57
+ctx_previa_disp,Vehículo y contexto,0.0
+ctx_flota_30,Vehículo y contexto,0.17
+ctx_flota_n,Vehículo y contexto,0.0
+gps_n,GPS,0.0
+gps_vel_media,GPS,1.45
+gps_prop_detenido,GPS,1.45
+gps_vel_reciente,GPS,1.59
