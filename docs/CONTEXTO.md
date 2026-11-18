@@ -1,6 +1,6 @@
 # Contexto del proyecto y decisiones
 
-Documento de referencia para el equipo: qué pide el curso, qué sabemos de los datos, qué problema elegimos y por qué. Las cifras salen del notebook [`01_auditoria_datos_v2.ipynb`](../notebooks/01_auditoria_datos_v2.ipynb) y del [Entregable 1](entregables/E1/Entregable1_G5.docx).
+Documento de referencia para el equipo: qué pide el curso, qué sabemos de los datos, qué problema elegimos y por qué. Las cifras salen del notebook [`01_auditoria_datos_v2.ipynb`](../notebooks/01_auditoria_datos_v2.ipynb), del [Entregable 1](entregables/E1/Entregable1_G5.docx) y de los notebooks 02 a 07 (Entregable 2).
 
 ## 1. Encargo del curso
 
@@ -38,6 +38,8 @@ E2 debe incluir: EDA y preprocesamiento, implementación, ajuste de hiperparáme
 | Monitoring: 1.630.431 puntos, 32 días (1 ene–1 feb); 1–5 ene sin filas en Times | Confirmado |
 | Muestreo GPS irregular: mediana 25 s, p95 91 s; 6.690 filas repetidas sin contar el id | Confirmado |
 | `lap` = 0 en Monitoring es vehículo fuera de operación (2,9 % de los puntos) | Dato de clase |
+| Tras quitar `lap` = 0 y repetidas quedan 1.575.820 puntos GPS | Confirmado |
+| 4.146 vueltas con punto 18 válido y \|valor\| ≤ 60 min (3.085 de entrenamiento y 1.061 de prueba) | Confirmado |
 | `speed` en km/h; `bearing` 0° al norte | Hipótesis |
 | Un solo trazado para todos los vehículos (Jaccard medio 0,79) | Hipótesis |
 | Unión por vehículo, fecha y `lap`: 99,9 % de las vueltas tiene GPS; 95,1 % de los puntos cae en su ventana | Confirmado |
@@ -120,10 +122,44 @@ Por qué P1: predecir siempre "a tiempo" da MAE 5,07 min en el punto 18 (último
 | 5 nov 2026 | Partición temporal por días, prueba 26 ene–1 feb | Evitar fuga temporal |
 | 5 nov 2026 | Solo algoritmos del curso, sin deep learning | Alcance del curso |
 | 6 nov 2026 | Entregable 1 presentado | — |
+| 18 nov 2026 | Instante de predicción = hora real de paso por el punto k (la programada si no se registró) | Todas las variables usan solo información anterior a ese instante |
+| 18 nov 2026 | Un modelo por corte k | El número de variables cambia con k (47 a 58) |
+| 18 nov 2026 | Pliegues: 8 días iniciales fijos y 4 bloques de validación de 3 días | Ventana creciente dentro de 6 a 25 ene, sin mezclar días |
+| 18 nov 2026 | Hiperparámetros por MAE medio de validación; prueba evaluada una sola vez | Evitar elegir con la semana de prueba |
+| 18 nov 2026 | Se mantiene la regla de 60 min | Sin ella el MAE de Gradient Boosting sube de 2,63 a 8,64 min en vueltas normales (k = 9) |
+| 18 nov 2026 | Umbrales de P2 fijos en 5 y 3 min | Con terciles el F1 macro baja de 0,774 a 0,678; K-medias con k = 3 da los mismos tres perfiles |
+| 18 nov 2026 | Gradient Boosting como modelo de referencia | Menor MAE de validación en los cinco cortes |
+| 18 nov 2026 | Las variables GPS se reportan sin aporte (H4 no se cumple) | La ablación no mejora el MAE en ningún k y su importancia por permutación es nula |
+| 18 nov 2026 | SVM sin `probability=True` | Parámetro deprecado en scikit-learn 1.9; el AUC-PR usa el puntaje de decisión |
 
 Agregar aquí cada nueva decisión (fecha, qué y por qué).
 
-## 6. Supuestos y riesgos
+## 6. Resultados del Entregable 2
+
+Cifras de prueba (26 ene a 1 feb) con los hiperparámetros elegidos en validación. Tablas completas en `results/tables/`.
+
+| Corte k | B1 mediana hora y día | B2 persistencia | Ridge | Random Forest | Gradient Boosting |
+|---|---|---|---|---|---|
+| 4 | 3,20 | 4,94 | 3,91 | 2,77 | 2,66 |
+| 6 | 3,20 | 3,93 | 3,30 | 2,74 | 2,65 |
+| 9 | 3,20 | 3,93 | 3,28 | 2,70 | 2,64 |
+| 12 | 3,20 | 3,56 | 3,02 | 2,49 | 2,47 |
+| 15 | 3,20 | 2,38 | 2,29 | 2,09 | 2,05 |
+
+MAE en minutos. En k = 9, Gradient Boosting tiene IC 95 % de 2,25 a 3,20 min (bootstrap por días), R² 0,75 y 86,7 % de vueltas con error de 5 min o menos.
+
+| Hipótesis | Resultado |
+|---|---|
+| H1 | Se cumple desde k = 6: el atraso observado reduce el MAE frente a solo horario (2,91 a 2,72 en k = 9) |
+| H2 | Se cumple: Gradient Boosting y Random Forest superan a Ridge en todos los cortes (Wilcoxon p < 0,001) |
+| H3 | Se cumple con una meseta entre k = 4 y 9 y una caída fuerte en k = 12 y 15 |
+| H4 | No se cumple: el GPS no mejora el MAE |
+| H5 | Se cumple con matices: pérdida absoluta 2,57 frente a cuadrática 2,64 en GB; Huber mejora mucho a la regresión lineal |
+| H6 | Parcial: vehículo y flota mejoran 0,09 min en total y 0,3 min a las 16 a 19 h y los sábados |
+
+P2 (k = 9): Gradient Boosting obtiene F1 macro 0,774 y F1 de atrasado 0,733; discretizar el regresor de P1 da casi lo mismo (0,760). P4: K-medias con k = 3 separa vueltas adelantadas de madrugada (−18 min), a tiempo (+1,3) y atrasadas (+12,1, 74 % en sábado).
+
+## 7. Supuestos y riesgos
 
 | Supuesto o riesgo | Cómo se maneja |
 |---|---|
@@ -138,7 +174,7 @@ Agregar aquí cada nueva decisión (fecha, qué y por qué).
 | Monitoring: 6.690 filas repetidas y 5 días sin Times | Se eliminan repetidas; esos días solo para describir |
 | V9 y V17 parciales | `speed` en km/h con nota; vueltas con GPS inconsistente se marcan |
 
-## 7. Trabajos relacionados
+## 8. Trabajos relacionados
 
 1. V. Martyanov et al., "Interpretable machine learning for identifying the determinants of bus delays," *Arch. Transp.*, vol. 77, no. 1, 2026, doi: 10.61089/aot2026.mnrkh112. — Atraso por parada en Varsovia, RF/XGBoost/CatBoost con validación por semanas; MAE 3,6 min. El más cercano; no usa el atraso ya observado.
 2. Meyer-Hollatz, Schwarz y Werner, "Punctuality predictions in public transportation: Quantifying the effect of external factors," *Wirtschaftsinformatik 2023*, paper 328. — Tranvías; XGBoost mejor; clima y feriados mejoran el MAE 17,33 %. Motiva la ablación.
