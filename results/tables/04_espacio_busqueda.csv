@@ -1,0 +1,13 @@
+modelo,combinaciones,hiperparámetros
+Regresión lineal,1,—
+Regresión lineal (GD),6,"alpha ∈ [0.0001, 0.01, 0.1]; eta0 ∈ [0.001, 0.01]"
+Ridge,5,"alpha ∈ [0.1, 1, 10, 100, 1000]"
+Lasso,5,"alpha ∈ [0.001, 0.01, 0.05, 0.1, 0.5]"
+Huber,9,"epsilon ∈ [1.35, 1.75, 2.5]; alpha ∈ [0.0001, 0.01, 1]"
+KNN,8,"n_neighbors ∈ [10, 25, 50, 100]; weights ∈ ['uniform', 'distance']"
+Árbol de decisión,12,"max_depth ∈ [3, 5, 8, None]; min_samples_leaf ∈ [10, 30, 60]"
+SVR (RBF),12,"C ∈ [1, 10, 30]; epsilon ∈ [0.5, 1.0]; gamma ∈ ['scale', 0.01]"
+Random Forest,12,"max_depth ∈ [None, 10]; min_samples_leaf ∈ [3, 10, 25]; max_features ∈ [0.33, 1.0]"
+Bagging,8,"max_samples ∈ [0.5, 1.0]; max_features ∈ [0.5, 1.0]; estimator__min_samples_leaf ∈ [5, 20]"
+AdaBoost,12,"n_estimators ∈ [100, 300]; learning_rate ∈ [0.03, 0.1, 0.5]; estimator__max_depth ∈ [3, 5]"
+Gradient Boosting,16,"n_estimators ∈ [200, 500]; learning_rate ∈ [0.02, 0.05]; max_depth ∈ [2, 3]; min_samples_leaf ∈ [10, 30]"
