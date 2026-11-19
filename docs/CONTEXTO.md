@@ -193,7 +193,7 @@ P2 (k = 9): Gradient Boosting obtiene exactitud 0,793, F1 macro 0,764 y F1 de at
 ## 8. Trabajos relacionados
 
 1. V. Martyanov et al., "Interpretable machine learning for identifying the determinants of bus delays," *Arch. Transp.*, vol. 77, no. 1, 2026, doi: 10.61089/aot2026.mnrkh112. — Atraso por parada en Varsovia, RF/XGBoost/CatBoost con validación por semanas; MAE 3,6 min. El más cercano; no usa el atraso ya observado.
-2. Meyer-Hollatz, Schwarz y Werner, "Punctuality predictions in public transportation: Quantifying the effect of external factors," *Wirtschaftsinformatik 2023*, paper 328. — Tranvías; XGBoost mejor; clima y feriados mejoran el MAE 17,33 %. Motiva la ablación.
+2. T. Meyer-Hollatz, N. Schwarz y T. Werner, "Punctuality predictions in public transportation: Quantifying the effect of external factors," *Wirtschaftsinformatik 2023 Proceedings*, paper 328, 2023. https://aisel.aisnet.org/wi2023/73 — Tranvías; XGBoost mejor; clima y feriados mejoran el MAE 17,33 %. Motiva la ablación.
 3. M. Yan, B. Xie y G. Xu, "Identifying spatial–temporal characteristics and significant factors of bus bunching based on an eGA and DT model," *Appl. Sci.*, vol. 12, no. 22, 2022, doi: 10.3390/app122211778. — Árboles y selección de variables; pesan la secuencia de paradas y los tiempos previos.
 4. Huang et al., "Bus single-trip time prediction based on ensemble learning," *Comput. Intell. Neurosci.*, 2022, doi: 10.1155/2022/6831167. — Lineal, KNN y ensambles con Wilcoxon/Friedman; RF mejor con MAE 3,23 min. Solo se cita su diseño y los ensambles.
 
