@@ -11,25 +11,28 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 | C. Método | _por definir_ |
 | D. Responsable | _por definir_ |
 
-## Estado al 18 nov
+## Estado al 18 nov (noche)
 
-- **Rama `feat/entregable-2`** (8 commits sobre `main`, subida a GitHub, **sin fusionar**): notebooks 02 a 07, módulos de `src/`, 12 figuras y 35 tablas en `results/`, informe del E2 (PDF y DOCX) y documentación actualizada.
-- **Fases 1 a 3 completas.** Fase 4 lista salvo la revisión del equipo, la fusión a `main` y la subida a la plataforma (vence el 20 nov). Fase 5 sin empezar.
-- **Resultado principal:** Gradient Boosting gana en todos los cortes; en k = 9 el MAE de prueba es 2,64 min (IC 95 % 2,25–3,20), frente a 3,20 de B1 y 3,93 de B2.
-- **Bloqueante para el E2:** el informe dice que el código está en el repositorio, pero `main` todavía no tiene los notebooks 02 a 07 ni `src/`. Hay que fusionar el PR antes de entregar.
+- **Ramas:** `feat/entregable-2` (trabajo original del E2) y `feat/e2-criterios-docentes` (sale de la anterior y aplica las indicaciones adicionales de los docentes). Ninguna está fusionada en `main`.
+- **Indicaciones de los docentes aplicadas** en `feat/e2-criterios-docentes`:
+  - Un solo tipo de aprendizaje: se retiró el clustering P4; quedan P1 (regresión) y P2 (clasificación), que son el mismo problema con dos enfoques.
+  - Preprocesamiento: contraste de la regla de 60 min, limpieza del GPS (V9 cerrada), interpolación, selección de variables y comparación de variantes por validación (notebook 02, Tabla III del informe).
+  - Meta del 80 %: se agregó la exactitud y una tabla de métricas frente a 0,80. **No se cumple en todas las métricas en k = 9** (R² 0,75, exactitud 0,79, F1 macro 0,76); sí en el error ≤ 5 min (86,8 %) y el AUC-PR (0,80). En k = 15 la cumplen casi todas.
+- **Resultado principal:** Gradient Boosting gana en todos los cortes; en k = 9 el MAE de prueba es 2,62 min (IC 95 % 2,24–3,19), frente a 3,20 de B1 y 3,93 de B2.
+- **Informe del E2** actualizado en la rama nueva: más conciso, con el material secundario en el Anexo D y el enlace al repositorio.
+- **Bloqueante para el E2:** el informe enlaza al repositorio, pero `main` todavía no tiene el código del E2. Hay que fusionar las ramas antes de entregar.
 
 ## Revisión del E2 antes de entregar (19 nov) — todos
 
-Puntos que conviene revisar porque el informe los afirma o porque son decisiones discutibles:
-
-- [ ] **Redacción de H3.** Gradient Boosting casi no cambia entre k = 4 y k = 9 (2,66 → 2,64 min, dentro del IC). El informe lo presenta como "se cumple con una meseta"; considerar "se cumple solo desde k = 12".
-- [ ] **Significancia por día.** Con 7 días de prueba, el p mínimo posible de Wilcoxon por día es 0,016. H1 en k = 4 (p = 0,47) y H6 (p ≥ 0,08) no son significativas por día. Aclarar si los p < 0,001 citados son por vuelta.
-- [ ] **Regla de 60 min en prueba.** El MAE reportado excluye 11 vueltas de prueba con \|y\| > 60 min; con ellas el MAE de GB en k = 9 es 7,20 y el RMSE 62. Declararlo explícitamente en resultados y limitaciones (`07_sensibilidad_60min.csv`).
-- [ ] **Rejilla de Gradient Boosting.** Los valores elegidos caen en los bordes de la rejilla (`n_estimators` = 500 en k = 4, 12 y 15; `learning_rate` = 0,02 en k = 4 y 15; `max_depth` = 2 en k = 12; `min_samples_leaf` = 10 en todos). Mencionarlo como limitación o ampliar la rejilla para la versión final.
-- [ ] **Cambio de distribución en P2.** "Atrasado" es el 33,9 % en entrenamiento y el 27,7 % en prueba (`05_distribucion_clases.csv`). Comentarlo en la discusión.
-- [ ] **Fuga en `ctx_flota_30`.** Es la 3.ª variable más importante. Revisé `src/variables.py` y solo usa pasos de otros vehículos con hora real anterior al corte; confirmar que el equipo está de acuerdo con incluir días de prueba en esa ventana (es información disponible en el instante de predicción).
-- [ ] **Cifras del informe contra `results/tables/`** (tabla VI con `04_mae_test_por_k.csv`, tabla VIII con `07_ablacion.csv`, tabla X con `05_metricas_k9.csv`).
-- [ ] **Reejecutar 02 a 07 con los CSV** en una máquina del equipo para confirmar que se reproducen las cifras (en este clon no hay datos en `data/raw/`).
+- [x] **Redacción de H3 y H1.** Ahora dicen "se cumple desde k = 12", con la meseta entre k = 4 y 9.
+- [x] **Significancia por día.** El informe aclara qué p son por vuelta y cuáles por día.
+- [x] **Regla de 60 min en prueba.** El informe declara que las métricas excluyen 11 vueltas de prueba (con ellas el MAE de GB en k = 9 es 7,19).
+- [x] **Rejilla de Gradient Boosting.** Se amplió a 81 combinaciones; en k = 9 y 15 elige tasa 0,01 con 1.000 árboles, el compromiso habitual tasa-árboles, con el mismo MAE de validación.
+- [x] **Cambio de distribución en P2.** Mencionado en el informe (33,9 % atrasado en entrenamiento y 27,7 % en prueba).
+- [ ] **Fuga en `ctx_flota_30`.** Solo usa pasos de otros vehículos con hora real anterior al corte; confirmar que el equipo está de acuerdo.
+- [ ] **Modelos lineales.** La selección de variables se eligió con Gradient Boosting y a los lineales les resta 0,1–0,15 min; está declarado como limitación. Decidir si se acepta.
+- [ ] **Meta del 80 %.** Decidir con el equipo cómo presentarla: hoy el informe reporta con transparencia qué métricas la superan.
+- [ ] **Revisar el PDF del E2** (redacción y formato) y las cifras contra `results/tables/`.
 
 ## Fase 0 · Repositorio (16 nov)
 
@@ -68,7 +71,7 @@ Puntos que conviene revisar porque el informe los afirma o porque son decisiones
 
 - [x] `05_clasificacion_P2.ipynb`: logística regularizada, KNN, árbol, SVM, RF, AdaBoost; F1 atrasado, F1 macro, exactitud balanceada, AUC-PR, matriz de confusión
 - [x] Sensibilidad de umbrales de P2 (5/3 min vs. terciles)
-- [x] `07_analisis_resultados.ipynb`:
+- [x] `06_analisis_resultados.ipynb` (antes 07):
   - [x] H1 y H3: curva MAE vs. k frente a líneas base
   - [x] H2: Ridge vs. RF y GB
   - [x] H4 y H6: ablación por grupos de variables; error por franja horaria y día
@@ -76,7 +79,7 @@ Puntos que conviene revisar porque el informe los afirma o porque son decisiones
   - [x] Sensibilidad con y sin la regla de 60 min
   - [x] IC por bootstrap sobre días y Wilcoxon entre pares de modelos
 - [x] Figuras y tablas finales en `results/figures/` y `results/tables/`
-- [x] (Opcional) `06_clustering_P4.ipynb`: perfiles de puntualidad con PCA, K-medias, GMM, jerárquico, DBSCAN; silueta, DB, CH, ARI
+- [x] ~~(Opcional) `06_clustering_P4.ipynb`~~ retirado: los docentes pidieron un solo tipo de aprendizaje
 
 ## Fase 4 · Entregable 2 (20 nov) — D con todos
 
@@ -85,7 +88,7 @@ Puntos que conviene revisar porque el informe los afirma o porque son decisiones
 - [x] Revisión cruzada: cifras del paper contra las tablas de `results/`
 - [x] Verificar que los notebooks corren de punta a punta en limpio
 - [x] Copiar el PDF y el DOCX del E2 en `docs/entregables/E2/`
-- [ ] Abrir PR `feat/entregable-2` → `main`, revisarlo y fusionarlo (el informe enlaza al repositorio)
+- [ ] Fusionar `feat/e2-criterios-docentes` (que contiene `feat/entregable-2`) en `main` mediante PR revisado (el informe enlaza al repositorio)
 - [ ] Marcar el commit entregado con `git tag e2` y `git push --tags`
 - [ ] Subir el PDF a la plataforma y enlazar el repositorio de GitHub
 - [ ] Confirmar la hora límite en la plataforma del curso
@@ -101,9 +104,9 @@ Puntos que conviene revisar porque el informe los afirma o porque son decisiones
 
 ## Pendientes abiertos
 
-- [ ] V9: confirmar la unidad de `speed` (km/h)
-- [ ] V17: decidir cómo marcar las vueltas que empiezan o terminan lejos de la ruta
+- [x] V9: `speed` está en km/h (cociente 1,07 con la velocidad calculada)
+- [x] V17: las vueltas que empiezan lejos de la ruta se marcan con `gps_dist_inicio`
 - [ ] Ampliar trabajos relacionados de 4 a 6–10 referencias verificadas (DOI que abra) — B. El informe del E2 sigue con las 4 del E1
 - [ ] Completar la referencia [2] del informe (faltan iniciales de los autores y enlace o DOI)
 - [x] Justificar los umbrales de P2 con la distribución observada (o con P4)
-- [ ] Contrastar la regla de 60 min con detección de anomalías (la sensibilidad con y sin la regla ya está en el notebook 07)
+- [x] Contrastar la regla de 60 min con la distribución, la cerca de Tukey y la z robusta (notebook 02)
