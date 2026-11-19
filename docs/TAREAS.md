@@ -13,8 +13,8 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 
 ## Estado al 18 nov (noche)
 
-- **Ramas:** `feat/entregable-2` (trabajo original del E2) y `feat/e2-criterios-docentes` (sale de la anterior y aplica las indicaciones adicionales de los docentes). Ninguna está fusionada en `main`.
-- **Indicaciones de los docentes aplicadas** en `feat/e2-criterios-docentes`:
+- **Ramas:** `feat/entregable-2` (trabajo original del E2) y `feat/entregable-2-v2` (sale de la anterior y aplica las indicaciones adicionales de los docentes). Ninguna está fusionada en `main`.
+- **Indicaciones de los docentes aplicadas** en `feat/entregable-2-v2`:
   - Un solo tipo de aprendizaje: se retiró el clustering P4; quedan P1 (regresión) y P2 (clasificación), que son el mismo problema con dos enfoques.
   - Preprocesamiento: contraste de la regla de 60 min, limpieza del GPS (V9 cerrada), interpolación, selección de variables y comparación de variantes por validación (notebook 02, Tabla III del informe).
   - Meta del 80 %: se agregó la exactitud y una tabla de métricas frente a 0,80. **No se cumple en todas las métricas en k = 9** (R² 0,75, exactitud 0,79, F1 macro 0,76); sí en el error ≤ 5 min (86,8 %) y el AUC-PR (0,80). En k = 15 la cumplen casi todas.
@@ -88,7 +88,7 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [x] Revisión cruzada: cifras del paper contra las tablas de `results/`
 - [x] Verificar que los notebooks corren de punta a punta en limpio
 - [x] Copiar el PDF y el DOCX del E2 en `docs/entregables/E2/`
-- [ ] Fusionar `feat/e2-criterios-docentes` (que contiene `feat/entregable-2`) en `main` mediante PR revisado (el informe enlaza al repositorio)
+- [ ] Fusionar `feat/entregable-2-v2` (que contiene `feat/entregable-2`) en `main` mediante PR revisado (el informe enlaza al repositorio)
 - [ ] Marcar el commit entregado con `git tag e2` y `git push --tags`
 - [ ] Subir el PDF a la plataforma y enlazar el repositorio de GitHub
 - [ ] Confirmar la hora límite en la plataforma del curso
