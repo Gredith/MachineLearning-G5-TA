@@ -65,7 +65,7 @@ Verificaciones V1–V19: 18 cerradas y 1 parcial. V9 se cerró en el E2 (`speed`
 | P4. Perfiles de puntualidad (vector de 18 desviaciones) | Clustering | Retirado en el E2: los docentes pidieron un solo tipo de aprendizaje |
 | P5. Zonas de detención con GPS | Clustering espacial | Descartado: 0,72 % de puntos detenidos y sin verdad de referencia |
 
-Por qué P1: predecir siempre "a tiempo" da MAE 5,07 min en el punto 18 (último 25 % de días); la persistencia del atraso del punto 9 baja a 3,95 min y la del 13 a 2,85 min. Hay margen para que hora, vehículo, flota y GPS aporten más. La duración de la vuelta (R1 de la v1) es P1 con k = 0.
+Por qué P1 (cifras exploratorias del E1, con el último 25 % de días como prueba): predecir siempre "a tiempo" da MAE 5,07 min en el punto 18; la persistencia del atraso del punto 9 baja a 3,95 min y la del 13 a 2,85 min. Con la partición definitiva del E2 son 5,05 y 3,93 min (`03_lineas_base.csv`). Hay margen para que hora, vehículo, flota y GPS aporten más. La duración de la vuelta (R1 de la v1) es P1 con k = 0.
 
 - **Unidad de observación:** vuelta × corte k, con k ∈ {4, 6, 9, 12, 15}; k = 9 es la referencia.
 - **Objetivo P1:** `difference_time` del punto 18, en minutos.

@@ -2,16 +2,16 @@
 
 Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentación final (27 nov). Marcar con `[x]` al terminar y anotar decisiones nuevas en [CONTEXTO.md](CONTEXTO.md#5-registro-de-decisiones).
 
-## Estado al 18 nov (noche)
+## Estado al 19 nov
 
-- **Ramas:** `feat/entregable-2` (trabajo original del E2) y `feat/entregable-2-v2` (sale de la anterior y aplica las indicaciones adicionales de los docentes). Ambas están en GitHub; ninguna está fusionada en `main`.
+- **Ramas:** `feat/entregable-2` (trabajo original del E2) y `feat/entregable-2-v2` (sale de la anterior y aplica las indicaciones adicionales de los docentes). `feat/entregable-2-v2` se fusionó en `main` con el PR #1, así que `main` ya tiene el código del E2.
 - **Indicaciones de los docentes aplicadas** en `feat/entregable-2-v2`:
   - Un solo tipo de aprendizaje: se retiró el clustering P4; quedan P1 (regresión) y P2 (clasificación), que son el mismo problema con dos enfoques.
   - Preprocesamiento: contraste de la regla de 60 min, limpieza del GPS (V9 cerrada), interpolación, selección de variables y comparación de variantes por validación (notebook 02, Tabla III del informe).
   - Meta del 80 %: se agregó la exactitud y una tabla de métricas frente a 0,80. **No se cumple en todas las métricas en k = 9** (R² 0,75, exactitud 0,79, F1 macro 0,76); sí en el error ≤ 5 min (86,8 %) y el AUC-PR (0,80). En k = 15 la cumplen casi todas.
 - **Resultado principal:** Gradient Boosting gana en todos los cortes; en k = 9 el MAE de prueba es 2,62 min (IC 95 % 2,24–3,19), frente a 3,20 de B1 y 3,93 de B2.
 - **Informe del E2** actualizado en la rama nueva: más conciso, con el material secundario en el Anexo D, el enlace al repositorio y la referencia [2] completa.
-- **Bloqueante para el E2:** el informe enlaza al repositorio, pero `main` todavía no tiene el código del E2. Hay que fusionar las ramas antes de entregar.
+- **Revisión cruzada del informe (19 nov):** todas las cifras cuadran con `results/tables/`. Quedan correcciones de redacción, listadas en [Revisión del E2](#revisión-del-e2-19-nov).
 
 ## Fase 0 · Repositorio (16 nov)
 
@@ -69,7 +69,8 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [x] Verificar que los notebooks corren de punta a punta en limpio (02 a 06 reejecutados con los datos reales el 18 nov)
 - [x] Copiar el PDF y el DOCX del E2 en `docs/entregables/E2/`
 - [x] Enlace al repositorio en el informe (resumen y sección de entorno)
-- [ ] Fusionar `feat/entregable-2-v2` (que contiene `feat/entregable-2`) en `main` mediante PR revisado (el informe enlaza al repositorio)
+- [x] Fusionar `feat/entregable-2-v2` (que contiene `feat/entregable-2`) en `main` mediante PR revisado (PR #1)
+- [ ] Aplicar en el DOCX las correcciones de [Revisión del E2](#revisión-del-e2-19-nov) y regenerar el PDF
 - [ ] Marcar el commit entregado con `git tag e2` y `git push --tags`
 - [ ] Subir el PDF a la plataforma y enlazar el repositorio de GitHub
 - [ ] Confirmar la hora límite en la plataforma del curso
@@ -106,4 +107,22 @@ Decisiones que el informe del E2 ya refleja y conviene que el equipo valide ante
 | Variable `ctx_flota_30` | Por validar | Es la 3.ª más importante. Solo usa pasos de otros vehículos con hora real anterior al corte, incluidos días de prueba: es información disponible en el instante de predicción, no fuga. |
 | Modelos lineales | Por validar | La selección de variables se eligió con Gradient Boosting y a los lineales les resta 0,1–0,15 min; está declarado como limitación. |
 | Meta del 80 % | Por validar | El informe reporta con transparencia qué métricas superan 0,80 (Tabla IX); en k = 9 no lo logran R², exactitud ni F1 macro. |
-| Revisión final del PDF | Por validar | Redacción, formato IEEE y cifras contra `results/tables/`. |
+| Revisión final del PDF | En curso | Cifras verificadas contra `results/tables/` (19 nov). Falta aplicar las correcciones de redacción de [Revisión del E2](#revisión-del-e2-19-nov) y revisar el formato IEEE. |
+
+## Revisión del E2 (19 nov)
+
+Hallazgos de la revisión cruzada entre el informe y `results/tables/`. Las cifras cuadran; lo que sigue son afirmaciones que conviene matizar en el texto.
+
+**Correcciones de redacción (para el E2)**
+
+- [ ] Resumen y conclusiones: "Gradient Boosting es el mejor en todos los cortes" vale para P1. En P2 la validación eligió AdaBoost en k = 4, 6 y 12 (`06_metricas_meta80.csv`).
+- [ ] Anexo de hiperparámetros: dice que los clasificadores usan pesos balanceados "cuando el algoritmo lo permite", pero Gradient Boosting y AdaBoost los permiten (`sample_weight`) y no los usan (`src/modelos.py`).
+- [ ] Conclusiones: "el horario y el atraso observado explican la mayor parte del desempeño". Hasta k = 9 el atraso aporta ≤ 0,04 min (`06_ablacion.csv`) y la importancia la dominan el horario y `ctx_flota_30` (`06_importancia_k9.csv`); el atraso pesa desde k = 12.
+- [ ] Discusión H5: la pérdida absoluta gana en prueba en los cinco cortes; explicitar que se mantiene la cuadrática por la regla de elegir con validación.
+- [ ] Limitaciones: ya menciona las 11 vueltas con \|y\| > 60 min; agregar que se excluyen usando el valor real, algo que no es posible en operación (con ellas el MAE de GB en k = 9 es 7,19).
+- [ ] Preprocesamiento: "el recorte empeora en k = 12 y 15" es correcto, pero en k = 4 el recorte es la mejor variante (3,084 frente a 3,098); conviene no generalizar.
+
+**Experimentos para el paper final (requieren reejecutar)**
+
+- [ ] Regla de 60 min: comparar "sin regla" también con pérdida absoluta o Huber; hoy la comparación usa pérdida cuadrática, la más sensible a extremos.
+- [ ] P2: aplicar `sample_weight` balanceado a Gradient Boosting y AdaBoost y ver si mejora la exactitud balanceada y el F1 macro.
