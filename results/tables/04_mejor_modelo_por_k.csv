@@ -1,0 +1,6 @@
+k,modelo,MAE_val,mejores_parametros,MAE,MedAE,RMSE,R2,pct_err_2,pct_err_5,MAE_B2,MAE_B1,mejora_vs_B2_pct
+4,Gradient Boosting,3.086,"{""learning_rate"": 0.02, ""max_depth"": 3, ""min_samples_leaf"": 10, ""n_estimators"": 600}",2.658,1.916,3.941,0.741,51.649,86.899,4.943,3.201,46.241
+6,Gradient Boosting,3.026,"{""learning_rate"": 0.05, ""max_depth"": 2, ""min_samples_leaf"": 20, ""n_estimators"": 600}",2.665,1.979,3.944,0.741,50.895,86.993,3.926,3.201,32.1
+9,Gradient Boosting,2.98,"{""learning_rate"": 0.01, ""max_depth"": 3, ""min_samples_leaf"": 10, ""n_estimators"": 1000}",2.624,1.949,3.85,0.753,51.367,86.805,3.935,3.201,33.308
+12,Gradient Boosting,2.766,"{""learning_rate"": 0.05, ""max_depth"": 2, ""min_samples_leaf"": 10, ""n_estimators"": 600}",2.464,1.9,3.599,0.784,52.78,88.596,3.558,3.201,30.75
+15,Gradient Boosting,2.375,"{""learning_rate"": 0.01, ""max_depth"": 4, ""min_samples_leaf"": 10, ""n_estimators"": 1000}",2.049,1.524,3.079,0.842,59.943,93.874,2.384,3.201,14.043

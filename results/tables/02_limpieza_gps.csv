@@ -1,0 +1,9 @@
+,valor
+Puntos GPS en operación,1575820.0
+Pares con velocidad calculada > 144 km/h,2879.0
+Puntos aislados eliminados,1853.0
+Puntos GPS tras la limpieza,1573967.0
+Cociente mediano speed / velocidad calculada,1.072
+Correlación speed vs velocidad calculada,0.646
+Vueltas con GPS,5381.0
+Vueltas que empiezan a más de 1 km del inicio típico (%),7.41

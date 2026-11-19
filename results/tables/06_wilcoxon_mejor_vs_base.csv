@@ -1,0 +1,11 @@
+k,modelo_a,modelo_b,MAE_a,MAE_b,p_vuelta,p_dia
+4,Gradient Boosting,B1 mediana hora-día,2.657554,3.200754,0.000000,0.015625
+4,Gradient Boosting,B2 persistencia,2.657554,4.943450,0.000000,0.015625
+6,Gradient Boosting,B1 mediana hora-día,2.665436,3.200754,0.000000,0.015625
+6,Gradient Boosting,B2 persistencia,2.665436,3.925542,0.000000,0.015625
+9,Gradient Boosting,B1 mediana hora-día,2.624310,3.200754,0.000000,0.015625
+9,Gradient Boosting,B2 persistencia,2.624310,3.934967,0.000000,0.015625
+12,Gradient Boosting,B1 mediana hora-día,2.463882,3.200754,0.000000,0.015625
+12,Gradient Boosting,B2 persistencia,2.463882,3.557964,0.000000,0.015625
+15,Gradient Boosting,B1 mediana hora-día,2.048878,3.200754,0.000000,0.015625
+15,Gradient Boosting,B2 persistencia,2.048878,2.383600,0.000002,0.015625

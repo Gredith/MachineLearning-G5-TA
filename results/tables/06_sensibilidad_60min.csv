@@ -1,0 +1,41 @@
+k,entrenamiento,modelo,prueba,n,MAE,RMSE
+4,con regla,Gradient Boosting,todas las vueltas,1072,7.226844,62.035010
+4,con regla,Gradient Boosting,sin |y| > 60,1061,2.651113,3.935066
+4,con regla,Ridge,todas las vueltas,1072,9.022197,62.735320
+4,con regla,Ridge,sin |y| > 60,1061,4.438141,7.180054
+4,sin regla,Gradient Boosting,todas las vueltas,1072,11.808735,45.373580
+4,sin regla,Gradient Boosting,sin |y| > 60,1061,9.544650,29.735390
+4,sin regla,Ridge,todas las vueltas,1072,20.681730,57.768954
+4,sin regla,Ridge,sin |y| > 60,1061,17.290873,27.672702
+6,con regla,Gradient Boosting,todas las vueltas,1072,7.243854,62.000708
+6,con regla,Gradient Boosting,sin |y| > 60,1061,2.671153,3.961515
+6,con regla,Ridge,todas las vueltas,1072,8.797489,62.620745
+6,con regla,Ridge,sin |y| > 60,1061,4.232834,7.932262
+6,sin regla,Gradient Boosting,todas las vueltas,1072,13.186100,42.475601
+6,sin regla,Gradient Boosting,sin |y| > 60,1061,10.825674,28.145679
+6,sin regla,Ridge,todas las vueltas,1072,20.416462,56.753826
+6,sin regla,Ridge,sin |y| > 60,1061,17.037523,27.211694
+9,con regla,Gradient Boosting,todas las vueltas,1072,7.186363,62.007319
+9,con regla,Gradient Boosting,sin |y| > 60,1061,2.622144,3.847849
+9,con regla,Ridge,todas las vueltas,1072,8.521186,62.534982
+9,con regla,Ridge,sin |y| > 60,1061,3.944861,6.611385
+9,sin regla,Gradient Boosting,todas las vueltas,1072,11.152909,46.553563
+9,sin regla,Gradient Boosting,sin |y| > 60,1061,8.781394,29.040783
+9,sin regla,Ridge,todas las vueltas,1072,21.546875,57.674241
+9,sin regla,Ridge,sin |y| > 60,1061,17.977364,28.483724
+12,con regla,Gradient Boosting,todas las vueltas,1072,7.027832,62.143148
+12,con regla,Gradient Boosting,sin |y| > 60,1061,2.458874,3.595336
+12,con regla,Ridge,todas las vueltas,1072,7.075479,55.090899
+12,con regla,Ridge,sin |y| > 60,1061,3.209853,4.479310
+12,sin regla,Gradient Boosting,todas las vueltas,1072,6.305149,35.605893
+12,sin regla,Gradient Boosting,sin |y| > 60,1061,4.372002,9.250202
+12,sin regla,Ridge,todas las vueltas,1072,11.103400,52.984198
+12,sin regla,Ridge,sin |y| > 60,1061,7.953102,10.891046
+15,con regla,Gradient Boosting,todas las vueltas,1072,6.584995,61.595494
+15,con regla,Gradient Boosting,sin |y| > 60,1061,2.045456,3.072234
+15,con regla,Ridge,todas las vueltas,1072,4.652994,34.828260
+15,con regla,Ridge,sin |y| > 60,1061,2.282753,3.262656
+15,sin regla,Gradient Boosting,todas las vueltas,1072,5.351370,33.980306
+15,sin regla,Gradient Boosting,sin |y| > 60,1061,3.589401,7.013473
+15,sin regla,Ridge,todas las vueltas,1072,8.713165,33.210719
+15,sin regla,Ridge,sin |y| > 60,1061,7.236993,9.839410

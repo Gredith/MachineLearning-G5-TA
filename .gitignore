@@ -5,12 +5,15 @@ data/processed/*
 !data/processed/.gitkeep
 *.csv
 *.parquet
+!results/tables/*.csv
 
 # Salidas generadas por los notebooks
 salidas_auditoria/
 salidas_auditoria.zip
 notebooks/salidas_auditoria/
 notebooks/salidas_auditoria.zip
+results/auditoria/
+results/auditoria.zip
 results/**/*.pkl
 results/**/*.joblib
 

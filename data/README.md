@@ -7,7 +7,7 @@ Los archivos los proporcionan los docentes del curso y **no se suben al reposito
 | `Times.csv` | `data/raw/` | 4.707 vueltas (una fila por vuelta) de 45 vehículos, 6 ene a 1 feb 2025, con 18 puntos de control en listas |
 | `Monitoring.csv` | `data/raw/` | 1.630.431 puntos GPS de los mismos vehículos, 1 ene a 1 feb 2025 |
 
-`data/processed/` guarda las tablas derivadas (por ejemplo, el dataset por corte k). También se ignora en git: se regenera ejecutando los notebooks.
+`data/processed/` guarda las tablas derivadas: `corte_k{k}.pkl` (dataset vuelta × corte k con la regla de 60 min), `corte_k{k}_sin_regla.pkl` (para la sensibilidad) y las predicciones de prueba de los notebooks 03 y 04 (`03_pred_test.pkl`, `04_pred_test.pkl`). También se ignora en git: se regenera ejecutando los notebooks 02 a 04.
 
 ## Variables principales
 

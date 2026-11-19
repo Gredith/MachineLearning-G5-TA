@@ -19,7 +19,7 @@ Datos: `Times.csv` (4.707 vueltas, 45 vehículos, 27 días, 18 puntos de control
 ├── data/                 # CSV originales (raw) y derivados (processed); no se versionan
 ├── notebooks/            # notebooks numerados en orden de ejecución
 ├── src/                  # funciones reutilizables extraídas de los notebooks
-├── results/              # figuras y tablas finales
+├── results/              # figuras y tablas finales (prefijo = notebook que las genera)
 ├── demo/                 # demostración interactiva (opcional)
 └── docs/
     ├── CONTEXTO.md       # contexto del proyecto y registro de decisiones
@@ -27,6 +27,26 @@ Datos: `Times.csv` (4.707 vueltas, 45 vehículos, 27 días, 18 puntos de control
     ├── CONVENCIONES.md   # ramas, commits, notebooks y buenas prácticas
     └── entregables/      # E1, E2 y entrega final (PDF/DOCX)
 ```
+
+El proyecto usa solo **aprendizaje supervisado** (regresión y clasificación).
+
+| Notebook | Qué hace | Tiempo aprox. (12 núcleos) |
+|---|---|---|
+| `01_auditoria_datos_v2` | Auditoría de los datos (E1) | 3 min |
+| `02_preprocesamiento_variables_por_corte` | Limpieza (contraste de la regla de 60 min, GPS, unidades), evaluación de variantes de preprocesamiento, dataset vuelta × k, partición | 2 min |
+| `03_lineas_base` | Líneas base B0 a B3 | 10 s |
+| `04_regresion_P1` | 12 regresores con búsqueda en rejilla y evaluación en prueba | 15–25 min |
+| `05_clasificacion_P2` | 7 clasificadores, referencias y sensibilidad de umbrales | 5–10 min |
+| `06_analisis_resultados` | Hipótesis H1 a H6: IC por bootstrap, Wilcoxon, ablación, pérdidas, regla de 60 min, métricas frente al 80 % | 5 min |
+
+| Módulo de `src/` | Contenido |
+|---|---|
+| `datos.py` | Carga y parseo de Times y Monitoring, regla de 60 min, velocidad calculada y limpieza del GPS |
+| `variables.py` | Construcción de las variables en el corte k sin fuga, interpolación de faltantes internos y selección de variables |
+| `particion.py` | Partición temporal y pliegues de ventana creciente |
+| `modelos.py` | Pipelines (imputación, filtro de varianza, escalado, one-hot) y espacios de hiperparámetros |
+| `evaluacion.py` | Métricas, bootstrap por días y Wilcoxon |
+| `graficos.py` | Estilo y colores de las figuras |
 
 ## Cómo ejecutar
 
@@ -37,14 +57,26 @@ pip install -r requirements.txt
 ```
 
 1. Coloca `Times.csv` y `Monitoring.csv` en `data/raw/`.
-2. Abre los notebooks de `notebooks/` en orden numérico y ejecuta todas las celdas. Semilla fija: 42.
+2. Ejecuta los notebooks de `notebooks/` en orden numérico (02 a 06 son los del E2; cada uno usa las salidas del anterior). Semilla fija: 42.
+
+Desde la terminal, en la carpeta `notebooks/`:
+
+```bash
+jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 02_preprocesamiento_variables_por_corte.ipynb
+```
+
+## Resultados del E2
+
+El mismo problema se aborda con dos enfoques supervisados: **regresión** de los minutos de desviación en el punto 18 (P1) y **clasificación** en atrasado, a tiempo o adelantado (P2), con las mismas observaciones y variables.
+
+Gradient Boosting es el mejor modelo en validación y en prueba en los cinco cortes. En k = 9 (mitad de la vuelta) predice la desviación del punto 18 con un MAE de 2,62 min (R² 0,75; 86,8 % de vueltas con error ≤ 5 min), frente a 3,20 min de la mejor línea base, y con 2,05 min en k = 15 (R² 0,84). La clasificación alcanza una exactitud de 0,79 en k = 9 y 0,83 en k = 15. El preprocesamiento reforzado (contraste de la regla de 60 min, limpieza del GPS, interpolación y selección de variables) mantiene el error con un 30 a 42 % menos de variables. Detalle en `docs/CONTEXTO.md` y en el informe del E2.
 
 ## Entregables
 
 | Entrega | Fecha | Puntos | Estado |
 |---|---|---|---|
 | E1: Propuesta y antecedentes | 6 nov | 5 | Entregado ([docs/entregables/E1](docs/entregables/E1)) |
-| E2: Implementación y evaluación experimental | 20 nov | 5 | En curso |
+| E2: Implementación y evaluación experimental | 20 nov | 5 | Listo para entregar ([docs/entregables/E2](docs/entregables/E2)) |
 | Presentación final (exposición, solución, paper) | 27 nov | 10 | Pendiente |
 
 ## Integrantes
