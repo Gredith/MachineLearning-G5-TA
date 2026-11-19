@@ -11,6 +11,26 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 | C. Método | _por definir_ |
 | D. Responsable | _por definir_ |
 
+## Estado al 18 nov
+
+- **Rama `feat/entregable-2`** (8 commits sobre `main`, subida a GitHub, **sin fusionar**): notebooks 02 a 07, módulos de `src/`, 12 figuras y 35 tablas en `results/`, informe del E2 (PDF y DOCX) y documentación actualizada.
+- **Fases 1 a 3 completas.** Fase 4 lista salvo la revisión del equipo, la fusión a `main` y la subida a la plataforma (vence el 20 nov). Fase 5 sin empezar.
+- **Resultado principal:** Gradient Boosting gana en todos los cortes; en k = 9 el MAE de prueba es 2,64 min (IC 95 % 2,25–3,20), frente a 3,20 de B1 y 3,93 de B2.
+- **Bloqueante para el E2:** el informe dice que el código está en el repositorio, pero `main` todavía no tiene los notebooks 02 a 07 ni `src/`. Hay que fusionar el PR antes de entregar.
+
+## Revisión del E2 antes de entregar (19 nov) — todos
+
+Puntos que conviene revisar porque el informe los afirma o porque son decisiones discutibles:
+
+- [ ] **Redacción de H3.** Gradient Boosting casi no cambia entre k = 4 y k = 9 (2,66 → 2,64 min, dentro del IC). El informe lo presenta como "se cumple con una meseta"; considerar "se cumple solo desde k = 12".
+- [ ] **Significancia por día.** Con 7 días de prueba, el p mínimo posible de Wilcoxon por día es 0,016. H1 en k = 4 (p = 0,47) y H6 (p ≥ 0,08) no son significativas por día. Aclarar si los p < 0,001 citados son por vuelta.
+- [ ] **Regla de 60 min en prueba.** El MAE reportado excluye 11 vueltas de prueba con \|y\| > 60 min; con ellas el MAE de GB en k = 9 es 7,20 y el RMSE 62. Declararlo explícitamente en resultados y limitaciones (`07_sensibilidad_60min.csv`).
+- [ ] **Rejilla de Gradient Boosting.** Los valores elegidos caen en los bordes de la rejilla (`n_estimators` = 500 en k = 4, 12 y 15; `learning_rate` = 0,02 en k = 4 y 15; `max_depth` = 2 en k = 12; `min_samples_leaf` = 10 en todos). Mencionarlo como limitación o ampliar la rejilla para la versión final.
+- [ ] **Cambio de distribución en P2.** "Atrasado" es el 33,9 % en entrenamiento y el 27,7 % en prueba (`05_distribucion_clases.csv`). Comentarlo en la discusión.
+- [ ] **Fuga en `ctx_flota_30`.** Es la 3.ª variable más importante. Revisé `src/variables.py` y solo usa pasos de otros vehículos con hora real anterior al corte; confirmar que el equipo está de acuerdo con incluir días de prueba en esa ventana (es información disponible en el instante de predicción).
+- [ ] **Cifras del informe contra `results/tables/`** (tabla VI con `04_mae_test_por_k.csv`, tabla VIII con `07_ablacion.csv`, tabla X con `05_metricas_k9.csv`).
+- [ ] **Reejecutar 02 a 07 con los CSV** en una máquina del equipo para confirmar que se reproducen las cifras (en este clon no hay datos en `data/raw/`).
+
 ## Fase 0 · Repositorio (16 nov)
 
 - [x] Estructura de carpetas, `.gitignore`, `requirements.txt`
@@ -65,6 +85,8 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [x] Revisión cruzada: cifras del paper contra las tablas de `results/`
 - [x] Verificar que los notebooks corren de punta a punta en limpio
 - [x] Copiar el PDF y el DOCX del E2 en `docs/entregables/E2/`
+- [ ] Abrir PR `feat/entregable-2` → `main`, revisarlo y fusionarlo (el informe enlaza al repositorio)
+- [ ] Marcar el commit entregado con `git tag e2` y `git push --tags`
 - [ ] Subir el PDF a la plataforma y enlazar el repositorio de GitHub
 - [ ] Confirmar la hora límite en la plataforma del curso
 
@@ -81,6 +103,7 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 
 - [ ] V9: confirmar la unidad de `speed` (km/h)
 - [ ] V17: decidir cómo marcar las vueltas que empiezan o terminan lejos de la ruta
-- [ ] Ampliar trabajos relacionados de 4 a 6–10 referencias verificadas (DOI que abra) — B
+- [ ] Ampliar trabajos relacionados de 4 a 6–10 referencias verificadas (DOI que abra) — B. El informe del E2 sigue con las 4 del E1
+- [ ] Completar la referencia [2] del informe (faltan iniciales de los autores y enlace o DOI)
 - [x] Justificar los umbrales de P2 con la distribución observada (o con P4)
 - [ ] Contrastar la regla de 60 min con detección de anomalías (la sensibilidad con y sin la regla ya está en el notebook 07)
