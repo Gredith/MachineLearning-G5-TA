@@ -2,7 +2,7 @@
 import numpy as np
 import pandas as pd
 from scipy.stats import wilcoxon
-from sklearn.metrics import (average_precision_score, balanced_accuracy_score, f1_score,
+from sklearn.metrics import (accuracy_score, average_precision_score, balanced_accuracy_score, f1_score,
                              mean_absolute_error, mean_squared_error, median_absolute_error, r2_score)
 
 SEMILLA = 42
@@ -24,6 +24,7 @@ def metricas_regresion(y, p):
 
 def metricas_clasificacion(y, p, prob_atrasado=None, clase_atrasado="atrasado"):
     r = {
+        "exactitud": accuracy_score(y, p),
         "F1_atrasado": f1_score(y, p, labels=[clase_atrasado], average="macro", zero_division=0),
         "F1_macro": f1_score(y, p, average="macro", zero_division=0),
         "exactitud_bal": balanced_accuracy_score(y, p),

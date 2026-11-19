@@ -1,0 +1,36 @@
+k,tarea,modelo,métrica,valor
+4,P1 regresión,Gradient Boosting,R²,0.7414
+4,P1 regresión,Gradient Boosting,Vueltas con error ≤ 5 min,0.8690
+4,P1 regresión,Gradient Boosting,Vueltas con error ≤ 2 min,0.5165
+4,P2 clasificación,AdaBoost,Exactitud,0.7889
+4,P2 clasificación,AdaBoost,F1 macro,0.7494
+4,P2 clasificación,AdaBoost,Exactitud balanceada,0.7173
+4,P2 clasificación,AdaBoost,AUC-PR atrasado,0.7828
+6,P1 regresión,Gradient Boosting,R²,0.7409
+6,P1 regresión,Gradient Boosting,Vueltas con error ≤ 5 min,0.8699
+6,P1 regresión,Gradient Boosting,Vueltas con error ≤ 2 min,0.5090
+6,P2 clasificación,AdaBoost,Exactitud,0.7898
+6,P2 clasificación,AdaBoost,F1 macro,0.7546
+6,P2 clasificación,AdaBoost,Exactitud balanceada,0.7209
+6,P2 clasificación,AdaBoost,AUC-PR atrasado,0.7745
+9,P1 regresión,Gradient Boosting,R²,0.7532
+9,P1 regresión,Gradient Boosting,Vueltas con error ≤ 5 min,0.8680
+9,P1 regresión,Gradient Boosting,Vueltas con error ≤ 2 min,0.5137
+9,P2 clasificación,Gradient Boosting,Exactitud,0.7926
+9,P2 clasificación,Gradient Boosting,F1 macro,0.7640
+9,P2 clasificación,Gradient Boosting,Exactitud balanceada,0.7381
+9,P2 clasificación,Gradient Boosting,AUC-PR atrasado,0.8038
+12,P1 regresión,Gradient Boosting,R²,0.7843
+12,P1 regresión,Gradient Boosting,Vueltas con error ≤ 5 min,0.8860
+12,P1 regresión,Gradient Boosting,Vueltas con error ≤ 2 min,0.5278
+12,P2 clasificación,AdaBoost,Exactitud,0.7983
+12,P2 clasificación,AdaBoost,F1 macro,0.7571
+12,P2 clasificación,AdaBoost,Exactitud balanceada,0.7198
+12,P2 clasificación,AdaBoost,AUC-PR atrasado,0.8259
+15,P1 regresión,Gradient Boosting,R²,0.8421
+15,P1 regresión,Gradient Boosting,Vueltas con error ≤ 5 min,0.9387
+15,P1 regresión,Gradient Boosting,Vueltas con error ≤ 2 min,0.5994
+15,P2 clasificación,Gradient Boosting,Exactitud,0.8322
+15,P2 clasificación,Gradient Boosting,F1 macro,0.7966
+15,P2 clasificación,Gradient Boosting,Exactitud balanceada,0.7725
+15,P2 clasificación,Gradient Boosting,AUC-PR atrasado,0.8795

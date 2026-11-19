@@ -54,8 +54,40 @@ def cargar_monitoring(ruta):
         "fecha": pd.to_datetime(m["date"]).to_numpy(),
         "lap": m["lap"].to_numpy(),
         "t": _a_minutos(m["time"].to_numpy()),
+        "lat": m["latitude"].to_numpy(dtype=float),
+        "lon": m["longitude"].to_numpy(dtype=float),
         "speed": m["speed"].to_numpy(dtype=float),
     })
+
+
+VEL_MAX_GPS = 144
+
+
+def _haversine_km(lat1, lon1, lat2, lon2):
+    lat1, lon1, lat2, lon2 = map(np.radians, (lat1, lon1, lat2, lon2))
+    a = np.sin((lat2 - lat1) / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin((lon2 - lon1) / 2) ** 2
+    return 2 * 6371.0 * np.arcsin(np.sqrt(a))
+
+
+def velocidad_calculada(gps):
+    """Velocidad (km/h) entre cada punto y el anterior del mismo vehículo y día, y el intervalo en segundos."""
+    g = gps.sort_values(["vehiculo", "fecha", "t"])
+    mismo = (g["vehiculo"].to_numpy()[1:] == g["vehiculo"].to_numpy()[:-1]) & \
+            (g["fecha"].to_numpy()[1:] == g["fecha"].to_numpy()[:-1])
+    dist = _haversine_km(g["lat"].to_numpy()[:-1], g["lon"].to_numpy()[:-1], g["lat"].to_numpy()[1:], g["lon"].to_numpy()[1:])
+    dt = np.diff(g["t"].to_numpy()) * 60
+    vel = np.where(mismo & (dt > 0), dist / np.where(dt > 0, dt, 1) * 3600, np.nan)
+    g = g.assign(dist_km=np.r_[np.nan, np.where(mismo, dist, np.nan)],
+                 dt_s=np.r_[np.nan, np.where(mismo, dt, np.nan)],
+                 vel_calc=np.r_[np.nan, vel])
+    return g
+
+
+def limpiar_saltos_gps(gps, vel_max=VEL_MAX_GPS):
+    """Elimina los puntos aislados fuera de lugar: se llega a ellos y se sale de ellos a más de vel_max km/h."""
+    g = velocidad_calculada(gps)
+    salto = (g["vel_calc"] > vel_max) & (g["vel_calc"].shift(-1) > vel_max)
+    return g.loc[~salto, gps.columns].reset_index(drop=True), int(salto.sum())
 
 
 def aplicar_regla_extremos(v, umbral=UMBRAL_EXTREMO):

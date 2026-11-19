@@ -10,4 +10,4 @@ SVR (RBF),12,"C ∈ [1, 10, 30]; epsilon ∈ [0.5, 1.0]; gamma ∈ ['scale', 0.0
 Random Forest,12,"max_depth ∈ [None, 10]; min_samples_leaf ∈ [3, 10, 25]; max_features ∈ [0.33, 1.0]"
 Bagging,8,"max_samples ∈ [0.5, 1.0]; max_features ∈ [0.5, 1.0]; estimator__min_samples_leaf ∈ [5, 20]"
 AdaBoost,12,"n_estimators ∈ [100, 300]; learning_rate ∈ [0.03, 0.1, 0.5]; estimator__max_depth ∈ [3, 5]"
-Gradient Boosting,16,"n_estimators ∈ [200, 500]; learning_rate ∈ [0.02, 0.05]; max_depth ∈ [2, 3]; min_samples_leaf ∈ [10, 30]"
+Gradient Boosting,81,"n_estimators ∈ [300, 600, 1000]; learning_rate ∈ [0.01, 0.02, 0.05]; max_depth ∈ [2, 3, 4]; min_samples_leaf ∈ [5, 10, 20]"

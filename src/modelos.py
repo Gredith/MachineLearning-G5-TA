@@ -3,6 +3,7 @@ import numpy as np
 from joblib import Parallel, delayed
 from sklearn.base import clone
 from sklearn.compose import ColumnTransformer
+from sklearn.feature_selection import VarianceThreshold
 from sklearn.ensemble import (AdaBoostClassifier, AdaBoostRegressor, BaggingRegressor, GradientBoostingClassifier,
                               GradientBoostingRegressor, RandomForestClassifier, RandomForestRegressor)
 from sklearn.impute import SimpleImputer
@@ -18,11 +19,15 @@ from .variables import CATEGORICAS
 
 
 def preprocesador(columnas):
-    """Imputación por mediana y escalado en numéricas; one-hot en categóricas. Se ajusta solo con train."""
+    """Imputación por mediana, descarte de columnas constantes y escalado en numéricas; one-hot en categóricas.
+
+    Todo se ajusta solo con las filas de entrenamiento que recibe el pipeline.
+    """
     cat = [c for c in columnas if c in CATEGORICAS]
     num = [c for c in columnas if c not in cat]
     return ColumnTransformer([
         ("num", Pipeline([("imp", SimpleImputer(strategy="median", keep_empty_features=True)),
+                          ("var", VarianceThreshold(0.0)),
                           ("esc", StandardScaler())]), num),
         ("cat", OneHotEncoder(handle_unknown="ignore", sparse_output=False), cat),
     ])
@@ -65,8 +70,8 @@ REGRESORES = {
     ),
     "Gradient Boosting": (
         GradientBoostingRegressor(subsample=0.8, random_state=SEMILLA),
-        {"n_estimators": [200, 500], "learning_rate": [0.02, 0.05], "max_depth": [2, 3],
-         "min_samples_leaf": [10, 30]},
+        {"n_estimators": [300, 600, 1000], "learning_rate": [0.01, 0.02, 0.05], "max_depth": [2, 3, 4],
+         "min_samples_leaf": [5, 10, 20]},
     ),
 }
 
@@ -94,8 +99,8 @@ CLASIFICADORES = {
         {"n_estimators": [100, 300], "learning_rate": [0.05, 0.3]},
     ),
     "Gradient Boosting": (
-        GradientBoostingClassifier(n_estimators=200, subsample=0.8, random_state=SEMILLA),
-        {"learning_rate": [0.05, 0.1], "max_depth": [2, 3]},
+        GradientBoostingClassifier(subsample=0.8, random_state=SEMILLA),
+        {"n_estimators": [200, 500], "learning_rate": [0.02, 0.05, 0.1], "max_depth": [2, 3, 4]},
     ),
 }
 

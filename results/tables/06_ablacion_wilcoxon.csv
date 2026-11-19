@@ -1,0 +1,21 @@
+k,sin,con,MAE_sin,MAE_con,p_vuelta,p_dia
+4,Horario,+ Atraso,2.740386,2.739089,0.628925,1.000000
+4,+ Atraso,+ Vehículo/flota,2.739089,2.669348,0.002147,0.296875
+4,+ Vehículo/flota,+ GPS (completo),2.669348,2.657554,0.152864,0.296875
+4,Completo sin vehículo/flota,+ GPS (completo),2.714012,2.657554,0.005096,0.296875
+6,Horario,+ Atraso,2.764629,2.723899,0.033368,0.812500
+6,+ Atraso,+ Vehículo/flota,2.723899,2.679262,0.010116,0.296875
+6,+ Vehículo/flota,+ GPS (completo),2.679262,2.665436,0.394969,0.296875
+6,Completo sin vehículo/flota,+ GPS (completo),2.698154,2.665436,0.032889,0.296875
+9,Horario,+ Atraso,2.732411,2.703401,0.458595,0.937500
+9,+ Atraso,+ Vehículo/flota,2.703401,2.632370,0.002290,0.156250
+9,+ Vehículo/flota,+ GPS (completo),2.632370,2.624310,0.453691,0.375000
+9,Completo sin vehículo/flota,+ GPS (completo),2.698602,2.624310,0.000606,0.078125
+12,Horario,+ Atraso,2.775667,2.506956,0.000033,0.078125
+12,+ Atraso,+ Vehículo/flota,2.506956,2.463131,0.002465,0.375000
+12,+ Vehículo/flota,+ GPS (completo),2.463131,2.463882,0.517627,0.812500
+12,Completo sin vehículo/flota,+ GPS (completo),2.525541,2.463882,0.000450,0.468750
+15,Horario,+ Atraso,2.780118,2.096427,0.000000,0.015625
+15,+ Atraso,+ Vehículo/flota,2.096427,2.040694,0.000541,0.015625
+15,+ Vehículo/flota,+ GPS (completo),2.040694,2.048878,0.546152,0.375000
+15,Completo sin vehículo/flota,+ GPS (completo),2.103242,2.048878,0.000572,0.046875

@@ -1,0 +1,8 @@
+,conteo
+Puntos con |valor| > 60 min (regla),156
+Puntos con |valor| entre 40 y 60 min,24
+Puntos con |valor| > 120 min,138
+"Punto 18 fuera de la cerca de Tukey [-18, 24]",210
+Punto 18 con |valor| > 60 min,46
+Puntos con z robusta > 10,760
+Picos aislados (> 5 min de ida y vuelta),0

@@ -1,10 +1,11 @@
 """Construcción del dataset vuelta x corte k sin información posterior al corte."""
+import re
 import warnings
 
 import numpy as np
 import pandas as pd
 
-from .datos import COL_DIF, COL_PROG, COL_REAL, PUNTOS, VEL_DETENIDO
+from .datos import COL_DIF, COL_PROG, COL_REAL, PUNTOS, VEL_DETENIDO, _haversine_km
 
 CORTES = (4, 6, 9, 12, 15)
 VENTANA_FLOTA = 30
@@ -95,39 +96,71 @@ def _vuelta_anterior(v, t_corte):
 
 
 def indexar_gps(gps):
-    """Diccionario (vehículo, fecha, lap) -> (horas ordenadas, velocidades)."""
+    """Diccionario (vehículo, fecha, lap) -> (horas ordenadas, velocidades, km del primer punto al inicio típico).
+
+    El inicio típico es la mediana de los primeros puntos de todas las vueltas; sirve para marcar vueltas
+    que empiezan lejos de la ruta (V17).
+    """
     gps = gps.sort_values(["vehiculo", "fecha", "lap", "t"])
+    primeros = gps.groupby(["vehiculo", "fecha", "lap"], sort=False)[["lat", "lon"]].first()
+    lat0, lon0 = primeros["lat"].median(), primeros["lon"].median()
     return {
-        (veh, pd.Timestamp(fecha), lap): (g["t"].to_numpy(), g["speed"].to_numpy())
+        (veh, pd.Timestamp(fecha), lap): (g["t"].to_numpy(), g["speed"].to_numpy(),
+                                          float(_haversine_km(g["lat"].iloc[0], g["lon"].iloc[0], lat0, lon0)))
         for (veh, fecha, lap), g in gps.groupby(["vehiculo", "fecha", "lap"], sort=False)
     }
 
 
 def _gps_hasta_corte(v, t_corte, indice):
-    salida = np.full((len(v), 4), np.nan)
+    salida = np.full((len(v), 5), np.nan)
     salida[:, 0] = 0
     claves = zip(v["vehiculo"], v["fecha"], v["lap"])
     for i, clave in enumerate(claves):
         if clave not in indice:
             continue
-        t, vel = indice[clave]
+        t, vel, dist_inicio = indice[clave]
         fin = np.searchsorted(t, t_corte[i], side="right")
         if fin == 0:
             continue
         reciente = vel[np.searchsorted(t, t_corte[i] - VENTANA_GPS_RECIENTE, side="left"):fin]
         salida[i] = [fin, vel[:fin].mean(), (vel[:fin] < VEL_DETENIDO).mean(),
-                     reciente.mean() if len(reciente) else np.nan]
+                     reciente.mean() if len(reciente) else np.nan, dist_inicio]
     return salida
 
 
-def construir_corte(v, k, indice_gps, pasadas=None):
-    """Observaciones con punto 18 válido y variables disponibles al pasar por el punto de control k."""
+def interpolar_internos(m):
+    """Interpola linealmente los faltantes que quedan entre dos puntos observados de la misma fila.
+
+    Solo usa valores de la propia fila y del rango observado (no extrapola), así que aplicado a los puntos
+    1..k no introduce información posterior al corte.
+    """
+    m = m.copy()
+    x = np.arange(m.shape[1])
+    for i in np.flatnonzero(np.isnan(m).any(axis=1)):
+        ok = ~np.isnan(m[i])
+        if ok.sum() < 2:
+            continue
+        a, b = np.flatnonzero(ok)[[0, -1]]
+        hueco = ~ok & (x > a) & (x < b)
+        m[i, hueco] = np.interp(x[hueco], x[ok], m[i, ok])
+    return m
+
+
+def construir_corte(v, k, indice_gps, pasadas=None, interpolar=False):
+    """Observaciones con punto 18 válido y variables disponibles al pasar por el punto de control k.
+
+    Con interpolar=True, los faltantes internos de los puntos 1..k se interpolan antes de calcular las
+    variables de atraso (los indicadores de faltante siguen marcando el dato original).
+    """
     pasadas = pasadas_por_punto(v) if pasadas is None else pasadas
     v = v[v["dif_18"].notna()].reset_index(drop=True)
     prog = v[COL_PROG].to_numpy()
     real = v[COL_REAL].to_numpy()
     dif = v[COL_DIF].to_numpy()
     obs = dif[:, :k]
+    falta = np.isnan(obs)
+    if interpolar:
+        obs = interpolar_internos(obs)
 
     # Instante de predicción: hora real en k; si no se registró, la programada.
     t_corte = np.where(np.isnan(real[:, k - 1]), prog[:, k - 1], real[:, k - 1])
@@ -153,7 +186,7 @@ def construir_corte(v, k, indice_gps, pasadas=None):
 
     for j in range(1, k + 1):
         x[f"atr_d_{j}"] = obs[:, j - 1]
-        x[f"atr_falta_{j}"] = np.isnan(obs[:, j - 1]).astype(int)
+        x[f"atr_falta_{j}"] = falta[:, j - 1].astype(int)
     ult = _ultimo_valido(obs)
     filas = np.arange(len(v))
     hay = ult >= 0
@@ -168,7 +201,7 @@ def construir_corte(v, k, indice_gps, pasadas=None):
     x.loc[~np.isfinite(x["atr_max"]), "atr_max"] = np.nan
     x.loc[~np.isfinite(x["atr_min"]), "atr_min"] = np.nan
     x["atr_pendiente"] = _pendiente(obs)
-    x["atr_n_faltantes"] = np.isnan(obs).sum(axis=1)
+    x["atr_n_faltantes"] = falta.sum(axis=1)
 
     x["ctx_vehiculo"] = v["vehiculo"]
     x["ctx_lap"] = v["lap"]
@@ -184,8 +217,15 @@ def construir_corte(v, k, indice_gps, pasadas=None):
     x["gps_vel_media"] = g[:, 1]
     x["gps_prop_detenido"] = g[:, 2]
     x["gps_vel_reciente"] = g[:, 3]
+    x["gps_dist_inicio"] = g[:, 4]
     return x
 
 
 def columnas_modelo(df, grupos=GRUPOS):
     return [c for c in df.columns if c.split("_")[0] in grupos]
+
+
+def columnas_detalle(df):
+    """Variables de detalle por punto que la selección descarta: indicadores de faltante y tramos programados
+    individuales (su información queda resumida en atr_n_faltantes, atr_dist_ultimo y hor_restante)."""
+    return [c for c in df.columns if re.fullmatch(r"atr_falta_\d+|hor_tramo_\d+", c)]

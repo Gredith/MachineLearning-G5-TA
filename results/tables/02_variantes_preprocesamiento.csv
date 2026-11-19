@@ -1,0 +1,26 @@
+k,variante,variables,MAE_val
+4,V0 base,47,3.100312
+4,V1 + interpolación,47,3.098134
+4,V2 + GPS limpio,48,3.105656
+4,V3 + selección,30,3.098326
+4,V4 + recorte del objetivo,30,3.083980
+6,V0 base,49,3.039872
+6,V1 + interpolación,49,3.031898
+6,V2 + GPS limpio,50,3.042923
+6,V3 + selección,32,3.046241
+6,V4 + recorte del objetivo,32,3.056775
+9,V0 base,52,2.974181
+9,V1 + interpolación,52,2.985389
+9,V2 + GPS limpio,53,2.985647
+9,V3 + selección,35,2.985714
+9,V4 + recorte del objetivo,35,2.992454
+12,V0 base,55,2.793342
+12,V1 + interpolación,55,2.790863
+12,V2 + GPS limpio,56,2.790276
+12,V3 + selección,38,2.793741
+12,V4 + recorte del objetivo,38,2.833426
+15,V0 base,58,2.382490
+15,V1 + interpolación,58,2.377932
+15,V2 + GPS limpio,59,2.379202
+15,V3 + selección,41,2.379353
+15,V4 + recorte del objetivo,41,2.429723
