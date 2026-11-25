@@ -1,6 +1,6 @@
-"""Lógica de la demo: cargar modelos, predecir, explicar y traducir el resultado a lenguaje simple.
+"""Lógica de la demo: cargar modelos, predecir y explicar.
 
-No depende de Streamlit, así que se puede probar por separado y reutilizar en otras pestañas.
+No depende de Streamlit ni del idioma: devuelve números y códigos, y app.py los convierte en texto.
 """
 import sys
 from pathlib import Path
@@ -19,12 +19,7 @@ FIN_ENTRENAMIENTO = pd.Timestamp("2025-01-25")
 CORTES = (4, 6, 9, 12, 15)
 UMBRAL_ATRASO, UMBRAL_ADELANTO = 5, 3  # mismos umbrales que P2 en el informe
 CATEGORICAS = ("hor_dia_semana", "ctx_vehiculo")
-NOMBRE_GRUPO = {
-    "hor": "Horario (hora de inicio y día)",
-    "atr": "Atraso observado hasta k",
-    "ctx": "Vehículo y otros buses",
-    "gps": "GPS",
-}
+DIAS_ES = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]  # claves de mae_por_dia
 
 
 def cargar_modelos():
@@ -41,6 +36,7 @@ def predecir(paquete, filas):
 
 
 def clasificar(minutos):
+    """Estado de la vuelta: 'atrasado', 'a tiempo' o 'adelantado' (los textos los traduce app.py)."""
     if minutos >= UMBRAL_ATRASO:
         return "atrasado"
     if minutos <= -UMBRAL_ADELANTO:
@@ -48,12 +44,29 @@ def clasificar(minutos):
     return "a tiempo"
 
 
-def explicar(paquete, fila):
-    """Cuánto cambia la predicción si el modelo no conociera cada grupo de variables.
+def rango(pred, paquete):
+    """Rango probable: la predicción ± el error medio del modelo en la semana de prueba, redondeado a minutos."""
+    mae = paquete["metricas_prueba"]["MAE"]
+    return int(round(pred - mae)), int(round(pred + mae))
 
-    El grupo se reemplaza por un valor típico del entrenamiento (la mediana que aplica el propio
-    pipeline; las categorías pasan a 'desconocida'). Es la misma idea de la ablación del informe,
-    aplicada a una sola vuelta. Los efectos no suman exactamente la predicción.
+
+def predecir_por_k(paquetes, variables, id_vuelta):
+    """Predicción de la misma vuelta con el modelo de cada punto de corte."""
+    filas = []
+    for k in CORTES:
+        fila = variables[(variables["k"] == k) & (variables["id"] == id_vuelta)]
+        if len(fila):
+            filas.append({"k": k, "pred": float(predecir(paquetes[k], fila)[0]),
+                          "mae": paquetes[k]["metricas_prueba"]["MAE"]})
+    return pd.DataFrame(filas)
+
+
+def explicar(paquete, fila):
+    """Cuánto cambia la predicción si el modelo no conociera cada grupo de variables (hor, atr, ctx, gps).
+
+    El grupo se reemplaza por un valor típico del entrenamiento (la mediana que aplica el propio pipeline; las
+    categorías pasan a 'desconocida'). Es la idea de la ablación del informe aplicada a una sola vuelta. Los
+    efectos no suman exactamente la predicción.
     """
     base = float(predecir(paquete, fila)[0])
     efectos = {}
@@ -62,59 +75,36 @@ def explicar(paquete, fila):
         for c in cols:
             sin_grupo[c] = "desconocida" if c in CATEGORICAS else np.nan
         efectos[grupo] = base - float(predecir(paquete, sin_grupo)[0])
-    return pd.Series(efectos).rename(NOMBRE_GRUPO).sort_values(key=np.abs, ascending=False)
+    return pd.Series(efectos).sort_values(key=np.abs, ascending=False)
 
 
-def num(valor, decimales=1):
-    """Número con coma decimal, como en el informe."""
-    return f"{valor:.{decimales}f}".replace(".", ",")
-
-
-def _minutos(valor):
-    m = abs(round(valor))
-    return f"{m} min" if m != 1 else "1 min"
-
-
-def mensaje(pred, k):
-    estado = clasificar(pred)
-    if estado == "atrasado":
-        texto = f"llegará al punto 18 con unos **{_minutos(pred)} de atraso**"
-    elif estado == "adelantado":
-        texto = f"llegará al punto 18 con unos **{_minutos(pred)} de adelanto**"
-    else:
-        sentido = "de atraso" if pred > 0.5 else "de adelanto" if pred < -0.5 else ""
-        texto = f"llegará al punto 18 **a tiempo** ({_minutos(pred)} {sentido})".replace(" )", ")")
-    return f"Con lo observado hasta el punto {k}, se estima que el bus {texto}.", estado
-
-
-def confianza(paquete):
-    m = paquete["metricas_prueba"]
-    return (f"En la semana de prueba, con información hasta el punto {paquete['k']}, el modelo se equivocó "
-            f"en promedio **{num(m['MAE'])} min**, y en el **{m['pct_err_5']:.0f} %** de las vueltas el error "
-            f"fue de 5 min o menos.")
-
-
-def advertencias(paquete, fila, franja, dia):
-    """Avisos cuando la vuelta se parece a los casos donde el modelo suele fallar más."""
-    avisos = []
+def senales(paquete, fila):
+    """Situaciones en las que el modelo suele fallar más: lista de (código, valores) que app.py traduce."""
     mae = paquete["metricas_prueba"]["MAE"]
+    franja = fila["franja"].iloc[0]
+    dia = int(fila["dia_semana"].iloc[0])
+    lista = []
     mae_franja = paquete["mae_por_franja"].get(franja)
-    mae_dia = paquete["mae_por_dia"].get(dia)
     if mae_franja and mae_franja > 1.2 * mae:
-        avisos.append(f"En la franja **{franja}** el error medio sube a **{num(mae_franja)} min**.")
+        lista.append(("franja", {"franja": franja, "v": mae_franja}))
+    mae_dia = paquete["mae_por_dia"].get(DIAS_ES[dia])
     if mae_dia and mae_dia > 1.2 * mae:
-        avisos.append(f"Los **{dia}s** el error medio sube a **{num(mae_dia)} min**.")
+        lista.append(("dia", {"dia": dia, "v": mae_dia}))
     faltantes = int(fila["atr_n_faltantes"].iloc[0])
     if faltantes:
-        avisos.append(f"Faltan registros en **{faltantes}** de los primeros {paquete['k']} puntos; "
-                      "se completaron con los puntos vecinos.")
+        lista.append(("faltantes", {"n": faltantes}))
     if pd.isna(fila["ctx_flota_30"].iloc[0]):
-        avisos.append("No hubo otros buses en los 30 min previos, así que el modelo no conoce la congestión del momento.")
-    return avisos
+        lista.append(("sin_flota", {}))
+    return lista
 
 
 class ArchivoInvalido(ValueError):
-    """Error con un mensaje pensado para mostrarse al usuario de la demo."""
+    """Archivo que no se puede usar. `clave` identifica el motivo y `datos` completa el mensaje."""
+
+    def __init__(self, clave, **datos):
+        super().__init__(clave)
+        self.clave = clave
+        self.datos = datos
 
 
 def leer_archivo_times(archivo):
@@ -122,18 +112,18 @@ def leer_archivo_times(archivo):
     try:
         columnas = set(pd.read_csv(archivo, nrows=0).columns)
     except Exception as e:
-        raise ArchivoInvalido("No se pudo leer el archivo como CSV.") from e
+        raise ArchivoInvalido("error_lectura") from e
     faltan = [c for c in COLUMNAS_TIMES if c not in columnas]
     if faltan:
-        raise ArchivoInvalido("Faltan columnas obligatorias: " + ", ".join(faltan) + ".")
+        raise ArchivoInvalido("error_columnas", faltan=", ".join(faltan))
+    archivo.seek(0)
+    if pd.read_csv(archivo, usecols=["id"]).empty:
+        raise ArchivoInvalido("error_vacio")
     archivo.seek(0)
     try:
         vueltas = cargar_times(archivo)
     except Exception as e:
-        raise ArchivoInvalido("Las columnas start_time, end_time y difference_time deben tener 18 valores entre llaves, "
-                              "como en Times.csv: {05:45:00,05:47:00,...}.") from e
-    if vueltas.empty:
-        raise ArchivoInvalido("El archivo no tiene filas.")
+        raise ArchivoInvalido("error_listas") from e
     return aplicar_regla_extremos(vueltas)
 
 

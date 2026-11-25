@@ -54,20 +54,11 @@ def meta_80():
     return t.pivot_table(index="fila", columns="k", values="valor").reindex(orden)
 
 
-# Resultado de las hipótesis, tal como lo resume la Tabla X del informe del E2.
-HIPOTESIS = [
-    ("H1", "El atraso observado mejora la predicción frente a usar solo el horario.", "Se cumple desde k = 12",
-     "parcial", "Solo horario 2,78 min frente a 2,51 (k = 12) y 2,10 (k = 15) al agregar el atraso; entre k = 4 y 9 "
-                "la mejora es de 0,04 min o menos."),
-    ("H2", "Los modelos de árboles superan a los lineales.", "Se cumple", "si",
-     "Gradient Boosting y Random Forest superan a Ridge en los cinco cortes (Wilcoxon, p < 0,001)."),
-    ("H3", "El error baja al observar más puntos de control.", "Se cumple desde k = 12", "parcial",
-     "El MAE de Gradient Boosting se mantiene entre 2,62 y 2,67 min de k = 4 a 9 y baja a 2,46 y 2,05."),
-    ("H4", "El GPS aporta información adicional.", "No se cumple", "no",
-     "Agregar el GPS cambia el MAE en ± 0,01 min y su importancia es casi nula."),
-    ("H5", "Las pérdidas absoluta y Huber rinden mejor que la cuadrática.", "Con matices", "parcial",
-     "En prueba la absoluta da 2,56 frente a 2,62 min, pero no en validación; en el modelo lineal Huber mejora "
-     "de 3,46 a 3,30 min."),
-    ("H6", "El contexto de vehículo y flota mejora la predicción en las horas de más atraso.", "Parcial", "parcial",
-     "Mejora 0,07 min en total, pero 0,24 min de 16 a 19 h y 0,33 min los sábados (k = 9)."),
-]
+def filtros():
+    """Conteo de vueltas en cada paso de la limpieza (notebook 02)."""
+    return _leer("02_filtros", index_col=0)["vueltas"]
+
+
+def limpieza_gps():
+    """Conteos de la limpieza del GPS (notebook 02)."""
+    return _leer("02_limpieza_gps", index_col=0)["valor"]
