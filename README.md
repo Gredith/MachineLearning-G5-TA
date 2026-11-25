@@ -67,12 +67,12 @@ jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeou
 
 ## Demo interactiva
 
-Aplicación con Streamlit para la presentación final: predice una vuelta de la semana de prueba eligiendo el punto de corte k, permite subir un archivo con el formato de `Times.csv` y resume los resultados del informe. Instrucciones y recorrido en [`demo/README.md`](demo/README.md).
+Aplicación con Streamlit para la presentación final, en español e inglés y con tema claro u oscuro: predice una vuelta de la semana de prueba eligiendo el punto de corte k, permite subir un archivo con el formato de `Times.csv`, resume los resultados del informe y explica el modelo y la limpieza de los datos. Detalle en [`demo/README.md`](demo/README.md).
 
 ```bash
-python demo/entrenar_modelos.py   # después de ejecutar el notebook 02
+python demo/entrenar_modelos.py   # prepara los datos si faltan y entrena (menos de 1 min)
 cd demo
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
 ## Resultados del E2

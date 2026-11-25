@@ -81,7 +81,9 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [ ] Paper final en PDF (`docs/entregables/final/`)
 - [ ] Diapositivas en PDF: introducción, trabajos relacionados, metodología, resultados, discusión, conclusiones y trabajo futuro, demo
 - [x] (Recomendado) Demo interactiva en `demo/` con Streamlit: predecir una vuelta, probar con otros datos y resultados del proyecto (rama `feat/demo`, guía en [demo/README.md](../demo/README.md))
-- [ ] Probar la demo en otra máquina y revisar el PR de `feat/demo`
+- [x] Demo v2 (rama `feat/demo-v2`): predicción en una sola vista con rango y sugerencia, predicción según k, pestaña «Acerca del modelo», ayudas de métricas, gráficos de ablación e hipótesis compactas, configuración global (idioma ES/EN y tema claro/oscuro/sistema) arriba a la derecha, barra lateral solo en la primera pestaña y tipografía Atkinson Hyperlegible
+- [x] Reproducibilidad de la demo: `entrenar_modelos.py` construye los datos por corte sin Jupyter y `.gitattributes` fija los saltos de línea
+- [ ] Probar la demo en otra máquina y revisar los PR de `feat/demo` y `feat/demo-v2`
 - [ ] Grabar un video corto de la demo como respaldo para la exposición
 - [ ] Ensayo con cronómetro: 15 min + 5 min de preguntas
 - [ ] Repositorio final: README actualizado, resultados y entregables
