@@ -80,7 +80,9 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [ ] Incorporar observaciones de los docentes al E2
 - [ ] Paper final en PDF (`docs/entregables/final/`)
 - [ ] Diapositivas en PDF: introducción, trabajos relacionados, metodología, resultados, discusión, conclusiones y trabajo futuro, demo
-- [ ] (Recomendado) Demo interactiva en `demo/` (por ejemplo, elegir una vuelta y un corte k y ver la predicción frente al real)
+- [x] (Recomendado) Demo interactiva en `demo/` con Streamlit: predecir una vuelta, probar con otros datos y resultados del proyecto (rama `feat/demo`, guía en [demo/README.md](../demo/README.md))
+- [ ] Probar la demo en otra máquina y revisar el PR de `feat/demo`
+- [ ] Grabar un video corto de la demo como respaldo para la exposición
 - [ ] Ensayo con cronómetro: 15 min + 5 min de preguntas
 - [ ] Repositorio final: README actualizado, resultados y entregables
 

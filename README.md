@@ -20,7 +20,7 @@ Datos: `Times.csv` (4.707 vueltas, 45 vehículos, 27 días, 18 puntos de control
 ├── notebooks/            # notebooks numerados en orden de ejecución
 ├── src/                  # funciones reutilizables extraídas de los notebooks
 ├── results/              # figuras y tablas finales (prefijo = notebook que las genera)
-├── demo/                 # demostración interactiva (opcional)
+├── demo/                 # demo interactiva con Streamlit (ver demo/README.md)
 └── docs/
     ├── CONTEXTO.md       # contexto del proyecto y registro de decisiones
     ├── TAREAS.md         # tareas pendientes hasta la entrega final
@@ -63,6 +63,16 @@ Desde la terminal, en la carpeta `notebooks/`:
 
 ```bash
 jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 02_preprocesamiento_variables_por_corte.ipynb
+```
+
+## Demo interactiva
+
+Aplicación con Streamlit para la presentación final: predice una vuelta de la semana de prueba eligiendo el punto de corte k, permite subir un archivo con el formato de `Times.csv` y resume los resultados del informe. Instrucciones y recorrido en [`demo/README.md`](demo/README.md).
+
+```bash
+python demo/entrenar_modelos.py   # después de ejecutar el notebook 02
+cd demo
+streamlit run app.py
 ```
 
 ## Resultados del E2
