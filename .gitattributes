@@ -1,0 +1,13 @@
+# Saltos de línea normalizados (LF) en el repositorio: al reejecutar los notebooks en Windows, las tablas
+# de results/ no aparecen como modificadas si su contenido no cambió.
+* text=auto
+*.csv text
+*.py text
+*.md text
+*.ipynb text
+*.toml text
+*.png binary
+*.pdf binary
+*.docx binary
+*.pkl binary
+*.joblib binary

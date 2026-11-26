@@ -1,0 +1,17 @@
+modelo,fraccion,MAE_train,MAE_val
+Gradient Boosting,0.3000,1.7827,3.5009
+Gradient Boosting,0.5000,2.0204,3.0286
+Gradient Boosting,0.7000,2.1416,2.9811
+Gradient Boosting,1.0000,2.1943,2.9798
+Gradient Boosting (Huber),0.3000,1.7517,3.4366
+Gradient Boosting (Huber),0.5000,1.9953,2.9938
+Gradient Boosting (Huber),0.7000,2.1220,2.9684
+Gradient Boosting (Huber),1.0000,2.1782,2.9813
+Random Forest,0.3000,1.7599,3.5877
+Random Forest,0.5000,1.8785,3.1429
+Random Forest,0.7000,1.9283,3.0968
+Random Forest,1.0000,1.9716,3.0869
+Red neuronal (MLP),0.3000,1.8062,4.1464
+Red neuronal (MLP),0.5000,2.6104,3.4915
+Red neuronal (MLP),0.7000,2.1410,3.3275
+Red neuronal (MLP),1.0000,2.4205,3.2024

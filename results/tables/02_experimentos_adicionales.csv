@@ -1,0 +1,26 @@
+k,variante,MAE_val
+4,V3 (dataset final),3.098326
+4,Quitar vueltas con horario no creciente,3.082607
+4,Quitar vueltas que empiezan a más de 1 km,3.094532
+4,Vehículo codificado por su atraso medio,3.111420
+4,+ atraso final de vueltas recientes (60 min),3.108913
+6,V3 (dataset final),3.046241
+6,Quitar vueltas con horario no creciente,3.033914
+6,Quitar vueltas que empiezan a más de 1 km,3.041682
+6,Vehículo codificado por su atraso medio,3.043866
+6,+ atraso final de vueltas recientes (60 min),3.046734
+9,V3 (dataset final),2.985714
+9,Quitar vueltas con horario no creciente,2.989253
+9,Quitar vueltas que empiezan a más de 1 km,2.985939
+9,Vehículo codificado por su atraso medio,3.013689
+9,+ atraso final de vueltas recientes (60 min),2.982590
+12,V3 (dataset final),2.793741
+12,Quitar vueltas con horario no creciente,2.763442
+12,Quitar vueltas que empiezan a más de 1 km,2.774142
+12,Vehículo codificado por su atraso medio,2.790292
+12,+ atraso final de vueltas recientes (60 min),2.787856
+15,V3 (dataset final),2.379353
+15,Quitar vueltas con horario no creciente,2.385014
+15,Quitar vueltas que empiezan a más de 1 km,2.356982
+15,Vehículo codificado por su atraso medio,2.376663
+15,+ atraso final de vueltas recientes (60 min),2.393167

@@ -1,0 +1,6 @@
+k,vueltas,% vueltas con algún faltante en 1..k,puntos faltantes en 1..k,% de esos faltantes interpolados (internos),% sin vuelta anterior terminada,% sin otros buses en 30 min,% sin GPS hasta el corte
+4,4146,10.2,869,21.5,29.6,0.1,2.0
+6,4146,10.8,1072,18.8,29.6,0.2,1.9
+9,4146,11.1,1311,18.9,29.6,0.2,1.4
+12,4146,11.5,1460,19.3,29.6,0.0,0.5
+15,4146,12.2,1581,22.5,29.6,0.0,0.2

@@ -17,6 +17,10 @@ results/auditoria.zip
 results/**/*.pkl
 results/**/*.joblib
 
+# Demo: modelos y datos se regeneran con demo/entrenar_modelos.py
+demo/modelos/
+demo/datos/
+
 # Python
 __pycache__/
 *.py[cod]

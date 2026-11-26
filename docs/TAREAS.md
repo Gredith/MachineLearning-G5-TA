@@ -70,18 +70,31 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [x] Copiar el PDF y el DOCX del E2 en `docs/entregables/E2/`
 - [x] Enlace al repositorio en el informe (resumen y sección de entorno)
 - [x] Fusionar `feat/entregable-2-v2` (que contiene `feat/entregable-2`) en `main` mediante PR revisado (PR #1)
-- [ ] Aplicar en el DOCX las correcciones de [Revisión del E2](#revisión-del-e2-19-nov) y regenerar el PDF
+- [x] Aplicar en el DOCX las correcciones de [Revisión del E2](#revisión-del-e2-19-nov) y regenerar el PDF (PR #2; la de AdaBoost se aplicó en el paper final)
 - [ ] Marcar el commit entregado con `git tag e2` y `git push --tags`
-- [ ] Subir el PDF a la plataforma y enlazar el repositorio de GitHub
-- [ ] Confirmar la hora límite en la plataforma del curso
+- [x] Subir el PDF a la plataforma y enlazar el repositorio de GitHub
+- [x] Confirmar la hora límite en la plataforma del curso
 
 ## Fase 5 · Presentación final (hasta 27 nov)
 
-- [ ] Incorporar observaciones de los docentes al E2
-- [ ] Paper final en PDF (`docs/entregables/final/`)
+- [ ] Incorporar observaciones de los docentes al E2 en el paper final (`docs/entregables/final/Paper_final_G5.docx`):
+  - [x] Abundar en el preprocesamiento: eliminaciones e imputación justificadas, figura del flujo de limpieza, variantes como gráfico (Tabla D4 al anexo) y experimentos adicionales en la Tabla D5 (rama `docs/paper-preprocesamiento`)
+  - [x] Justificar el tipo de entrenamiento (nueva V-G), la variable objetivo y los umbrales (con el TCQSM como referencia [5]) y las librerías (VI-F)
+  - [x] Interpretación de las métricas (Tabla V y frases en VII-A y VII-G) y figuras en lugar de tablas en resultados: Fig. 5 (métricas en k = 9), Fig. 6 (ablación) y Fig. 7 (meta 0,80); las tablas pasan a D6–D8
+  - [x] Pérdida de Huber: notebook 07 con los hiperparámetros del 04; mejora pequeña y consistente, se reporta en VII-I sin reemplazar el modelo del informe
+  - [x] Red neuronal simple (MLP) con búsqueda equivalente a Gradient Boosting (81 combinaciones) y capacidad comparable: no lo supera (notebook 07, VII-I)
+  - [x] Diagnóstico de sobreajuste y subajuste de todos los modelos, curvas de aprendizaje e iteraciones (notebook 07, VII-I, Fig. 9 y Tabla D9)
+  - [x] Aclarar que en P2 la validación eligió AdaBoost en k = 4, 6 y 12 (VII-H)
+  - [x] Leyenda de la Fig. 5 con colores neutros (notebook 06)
+  - [x] Cita del TCQSM verificada en el manual original (cap. 5, Anexo 5-21, p. 5-30)
+  - [x] Párrafo de técnicas (validación temporal, rejilla, bootstrap por días, Wilcoxon, ablación, permutación en lugar de SHAP, Huber) y referencias [6]–[8] verificadas
+  - [x] Demo con el mejor modelo de las pruebas (Gradient Boosting con Huber), validado frente a la meta del 80 % en el notebook 07
+- [ ] Paper final en PDF (`docs/entregables/final/`): borrador con las observaciones de los docentes en la rama `docs/paper-preprocesamiento`, falta revisión del equipo
 - [ ] Diapositivas en PDF: introducción, trabajos relacionados, metodología, resultados, discusión, conclusiones y trabajo futuro, demo
-- [ ] (Recomendado) Demo interactiva en `demo/` (por ejemplo, elegir una vuelta y un corte k y ver la predicción frente al real)
-- [ ] Ensayo con cronómetro: 15 min + 5 min de preguntas
+- [x] (Recomendado) Demo interactiva en `demo/` con Streamlit: predecir una vuelta, probar con otros datos y resultados del proyecto (rama `feat/demo`, guía en [demo/README.md](../demo/README.md))
+- [x] Demo v2 (rama `feat/demo-v2`): predicción en una sola vista con rango y sugerencia, predicción según k, pestaña «Acerca del modelo», ayudas de métricas, gráficos de ablación e hipótesis compactas, configuración global (idioma ES/EN y tema claro/oscuro/sistema) arriba a la derecha, barra lateral solo en la primera pestaña y tipografía Atkinson Hyperlegible
+- [x] Reproducibilidad de la demo: `entrenar_modelos.py` construye los datos por corte sin Jupyter y `.gitattributes` fija los saltos de línea
+- [ ] Probar la demo en otra máquina y revisar los PR de `feat/demo` y `feat/demo-v2`
 - [ ] Repositorio final: README actualizado, resultados y entregables
 
 ## Pendientes abiertos
@@ -91,7 +104,7 @@ Mapa de trabajo desde el Entregable 1 (entregado el 6 nov) hasta la presentació
 - [x] Completar la referencia [2] del informe: T. Meyer-Hollatz, N. Schwarz y T. Werner, *Wirtschaftsinformatik 2023 Proceedings*, paper 328, https://aisel.aisnet.org/wi2023/73
 - [x] Justificar los umbrales de P2 con la distribución observada (terciles: F1 macro 0,680 frente a 0,764)
 - [x] Contrastar la regla de 60 min con la distribución, la cerca de Tukey y la z robusta (notebook 02)
-- [ ] Ampliar trabajos relacionados de 4 a 6–10 referencias verificadas (DOI que abra) para el paper final. Requiere leer cada artículo y reescribir la Sección III.
+- [ ] Ampliar trabajos relacionados (Sección III) solo con referencias indispensables. Ya se agregaron [5]–[8] para justificar umbrales y técnicas.
 
 ## Puntos de decisión para el equipo
 
@@ -115,14 +128,14 @@ Hallazgos de la revisión cruzada entre el informe y `results/tables/`. Las cifr
 
 **Correcciones de redacción (para el E2)**
 
-- [ ] Resumen y conclusiones: "Gradient Boosting es el mejor en todos los cortes" vale para P1. En P2 la validación eligió AdaBoost en k = 4, 6 y 12 (`06_metricas_meta80.csv`).
-- [ ] Anexo de hiperparámetros: dice que los clasificadores usan pesos balanceados "cuando el algoritmo lo permite", pero Gradient Boosting y AdaBoost los permiten (`sample_weight`) y no los usan (`src/modelos.py`).
-- [ ] Conclusiones: "el horario y el atraso observado explican la mayor parte del desempeño". Hasta k = 9 el atraso aporta ≤ 0,04 min (`06_ablacion.csv`) y la importancia la dominan el horario y `ctx_flota_30` (`06_importancia_k9.csv`); el atraso pesa desde k = 12.
-- [ ] Discusión H5: la pérdida absoluta gana en prueba en los cinco cortes; explicitar que se mantiene la cuadrática por la regla de elegir con validación.
-- [ ] Limitaciones: ya menciona las 11 vueltas con \|y\| > 60 min; agregar que se excluyen usando el valor real, algo que no es posible en operación (con ellas el MAE de GB en k = 9 es 7,19).
-- [ ] Preprocesamiento: "el recorte empeora en k = 12 y 15" es correcto, pero en k = 4 el recorte es la mejor variante (3,084 frente a 3,098); conviene no generalizar.
+- [x] Resumen y conclusiones: "Gradient Boosting es el mejor en todos los cortes" vale para P1. En P2 la validación eligió AdaBoost en k = 4, 6 y 12 (`06_metricas_meta80.csv`).
+- [x] Anexo de hiperparámetros: dice que los clasificadores usan pesos balanceados "cuando el algoritmo lo permite", pero Gradient Boosting y AdaBoost los permiten (`sample_weight`) y no los usan (`src/modelos.py`).
+- [x] Conclusiones: "el horario y el atraso observado explican la mayor parte del desempeño". Hasta k = 9 el atraso aporta ≤ 0,04 min (`06_ablacion.csv`) y la importancia la dominan el horario y `ctx_flota_30` (`06_importancia_k9.csv`); el atraso pesa desde k = 12.
+- [x] Discusión H5: la pérdida absoluta gana en prueba en los cinco cortes; explicitar que se mantiene la cuadrática por la regla de elegir con validación.
+- [x] Limitaciones: ya menciona las 11 vueltas con \|y\| > 60 min; agregar que se excluyen usando el valor real, algo que no es posible en operación (con ellas el MAE de GB en k = 9 es 7,19).
+- [x] Preprocesamiento: "el recorte empeora en k = 12 y 15" es correcto, pero en k = 4 el recorte es la mejor variante (3,084 frente a 3,098); conviene no generalizar.
 
 **Experimentos para el paper final (requieren reejecutar)**
 
-- [ ] Regla de 60 min: comparar "sin regla" también con pérdida absoluta o Huber; hoy la comparación usa pérdida cuadrática, la más sensible a extremos.
-- [ ] P2: aplicar `sample_weight` balanceado a Gradient Boosting y AdaBoost y ver si mejora la exactitud balanceada y el F1 macro.
+- [x] ~~Regla de 60 min: comparar "sin regla" también con pérdida absoluta o Huber~~ descartado el 26 nov: el análisis actual ya justifica la regla.
+- [x] P2: `sample_weight` balanceado en Gradient Boosting y AdaBoost (notebook 07): sube la exactitud balanceada pero baja el F1 macro de validación (−0,02 a −0,05); no se adopta.
