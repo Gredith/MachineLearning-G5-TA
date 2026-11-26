@@ -69,7 +69,7 @@ Por qué P1 (cifras exploratorias del E1, con el último 25 % de días como prue
 
 - **Unidad de observación:** vuelta × corte k, con k ∈ {4, 6, 9, 12, 15}; k = 9 es la referencia.
 - **Objetivo P1:** `difference_time` del punto 18, en minutos.
-- **Objetivo P2:** atrasado (≥ 5 min), a tiempo, adelantado (≥ 3 min de adelanto). Umbrales provisionales.
+- **Objetivo P2:** atrasado (≥ 5 min), a tiempo, adelantado (≥ 3 min de adelanto). El de atraso sigue la ventana de puntualidad del TCQSM (de 1 min de adelanto a 5 de atraso); el de adelanto se fijó con los datos (con 1 min, el 23 % sería adelantada) y los terciles dan peor F1 macro.
 - **Variables en el corte k** (grupos para ablación):
   - *Horario:* hora de inicio (cíclica y lineal), día de la semana, minutos programados restantes y totales, indicador de horario no creciente.
   - *Atraso observado:* puntos 1 a k (faltantes internos interpolados), último valor, distancia al último registro, media de los últimos tres, máximo, mínimo, pendiente y número de faltantes.
@@ -96,7 +96,7 @@ Por qué P1 (cifras exploratorias del E1, con el último 25 % de días como prue
 
 **Líneas base:** B0 "a tiempo" (0); B1 mediana del atraso final por hora de inicio y día; B2 persistencia (atraso del punto k); B3 regresión lineal con solo el atraso del punto k.
 
-**Algoritmos** (solo los vistos en el curso; sin redes neuronales):
+**Algoritmos** (los vistos en el curso; en el paper final se agrega una red neuronal simple como comparación, notebook 07):
 
 | Familia | Algoritmos | Uso |
 |---|---|---|
@@ -108,6 +108,7 @@ Por qué P1 (cifras exploratorias del E1, con el último 25 % de días como prue
 | Ensambles | Random Forest, Bagging, AdaBoost, Gradient Boosting | P1, P2 |
 | Clasificación | Regresión logística regularizada | P2 |
 | Complementarias | Contraste robusto de valores extremos, selección de variables, filtro de varianza | Preprocesamiento |
+| Red neuronal | Perceptrón multicapa (`MLPRegressor`) con búsqueda equivalente a Gradient Boosting | P1, notebook 07 |
 
 **Métricas**
 - Regresión: **MAE** (principal), mediana del error absoluto, RMSE, R², % de vueltas con error ≤ 2 y ≤ 5 min. Por corte k y franja horaria.
@@ -145,6 +146,19 @@ Por qué P1 (cifras exploratorias del E1, con el último 25 % de días como prue
 | 18 nov 2026 | Limpiar el GPS (puntos aislados > 144 km/h) y cerrar V9 | Cociente speed / velocidad calculada de 1,07: speed en km/h |
 | 18 nov 2026 | Preprocesamiento V3: interpolación, GPS limpio y selección de variables | Mismo MAE de validación que la base (±0,01 min) con 30 a 42 % menos variables; el recorte del objetivo empeora |
 | 18 nov 2026 | Rejilla de Gradient Boosting de 16 a 81 combinaciones; exactitud agregada a P2 | Los valores elegidos estaban en el borde; meta del 80 % de los docentes |
+| 25 nov 2026 | Demo v2 (`feat/demo-v2`): configuración global, idioma ES/EN, tema claro/oscuro/sistema, predicción en una vista | Observaciones de los docentes: demo con interfaz e interpretación del resultado |
+| 26 nov 2026 | El paper final se trabaja en `docs/entregables/final/Paper_final_G5.docx`, copia del E2 | El E2 queda tal como se entregó |
+| 26 nov 2026 | Preprocesamiento del paper ampliado: eliminaciones e imputación justificadas, Fig. 2 (flujo de limpieza), Fig. 3 (variantes) y Tablas D4–D5 | Observación de los docentes: abundar en el preprocesamiento; se imputa en lugar de eliminar porque 10–12 % de las vueltas tiene algún faltante en 1..k y 30 % no tiene vuelta anterior (`02_faltantes_imputacion.csv`) |
+| 26 nov 2026 | No se adoptan otros cambios de preprocesamiento (quitar vueltas atípicas, codificar el vehículo por su atraso medio, atraso final reciente) | Ninguno mejora el MAE de validación de forma consistente (±0,03 min, `02_experimentos_adicionales.csv`) |
+| 26 nov 2026 | Umbral de atraso de 5 min justificado con el TCQSM; el de adelanto (3 min), con los datos | Verificado en el manual original (TCQSM 3.ª ed., cap. 5, Anexo 5-21, p. 5-30): "a tiempo" es una salida entre 1 min de adelanto y 5 de atraso o una llegada al terminal con hasta 5 min de atraso; el punto 18 es el terminal. Con 1 min de adelanto, el 23 % de las vueltas sería adelantada; con 3 min, el 11,9 % |
+| 26 nov 2026 | En resultados, figuras en lugar de tablas (Fig. 5 a 7) y tabla de lectura de métricas (Tabla V); las tablas pasan a D6–D8 | Observación de los docentes: más gráficos y más interpretabilidad de las métricas |
+| 26 nov 2026 | Mejoras en un notebook aparte (07) sin reejecutar 04–06 | Evita cambiar todas las cifras a un día de la entrega; las referencias se leen de `04_*` y `05_*` |
+| 26 nov 2026 | La pérdida de Huber se reporta como mejora, sin reemplazar el modelo del informe | Baja el MAE de validación en 4 de 5 cortes (−0,03 a −0,05) y el de prueba en los 5 (k = 9: 2,62 → 2,58) |
+| 26 nov 2026 | La red neuronal (MLP) se compara con el mismo esfuerzo de ajuste que Gradient Boosting (81 combinaciones) y capacidad del mismo orden | Con una rejilla de 6 combinaciones la comparación no era justa; aun igualada, queda 0,08–0,22 min peor en validación |
+| 26 nov 2026 | No se adoptan pesos balanceados en Gradient Boosting y AdaBoost (P2) | Bajan el F1 macro de validación entre 0,02 y 0,05 |
+| 26 nov 2026 | Diagnóstico de sobreajuste/subajuste de todos los modelos (entrenamiento vs. validación vs. prueba, curvas de aprendizaje) | Pedido del equipo: comprobar que la mejora sea robusta y no forzada |
+| 26 nov 2026 | La demo usa Gradient Boosting con pérdida de Huber en los cinco cortes | Mejor resultado de las pruebas; en k = 9 la validación empata (2,981 frente a 2,980) y en prueba gana en los 5 cortes. En prueba supera 0,80 en error ≤ 5 min y AUC-PR en todos los cortes, y en exactitud desde k = 6 (`07_modelo_demo_meta80.csv`) |
+| 26 nov 2026 | Párrafo de técnicas en VI-F y referencias [6]–[8] (Cerqueira et al. 2020, Hooker et al. 2021, Friedman 2001), verificadas en Crossref | Justifican la validación temporal, la importancia por permutación por grupos en lugar de SHAP y la pérdida de Huber; formato IEEE como el resto del paper |
 
 Agregar aquí cada nueva decisión (fecha, qué y por qué).
 
@@ -172,6 +186,13 @@ MAE en minutos. En k = 9, Gradient Boosting tiene IC 95 % de 2,24 a 3,19 min (bo
 | H6 | Parcial: vehículo y flota mejoran 0,07 min en total, 0,24 min de 16 a 19 h y 0,33 min los sábados |
 
 P2 (k = 9): Gradient Boosting obtiene exactitud 0,793, F1 macro 0,764 y F1 de atrasado 0,721; discretizar el regresor de P1 da casi lo mismo (exactitud 0,796, F1 macro 0,762).
+
+**Mejoras del paper final** (notebook 07, `results/tables/07_*.csv`):
+- Pérdida de Huber en Gradient Boosting: MAE de validación −0,03 a −0,05 min en 4 de 5 cortes (igual en k = 9) y de prueba −0,04 a −0,07 en los 5; en k = 9, 2,58 min (R² 0,758; 87,6 % con error ≤ 5 min).
+- Red neuronal (MLP) con 81 combinaciones y 5 mil a 62 mil parámetros (Gradient Boosting: 2 mil a 12 mil hojas): 3,20 min de MAE de validación en k = 9 frente a 2,98; en prueba, 3,08 frente a 2,62. Queda por debajo de Random Forest en todos los cortes.
+- Pesos balanceados en P2: F1 macro de validación −0,02 a −0,05; no se adoptan.
+- Modelo de la demo (GB con Huber) en prueba: error ≤ 5 min 0,876 a 0,942 y AUC-PR 0,817 a 0,886 en los cinco cortes; exactitud al convertir en estados 0,796 (k = 4), 0,802, 0,800 (k = 9), 0,812 y 0,838 (k = 15).
+- Diagnóstico (k = 9): Gradient Boosting 2,39 min en entrenamiento, 2,98 en validación y 2,62 en prueba (brecha moderada, mejor validación); Random Forest, Bagging y KNN sobreajustan más; los lineales subajustan (≈ 3,2 en entrenamiento). Agregar árboles no empeora la validación.
 
 **Meta del 80 %** (`06_metricas_meta80.csv`): en k = 9 la superan el % de vueltas con error ≤ 5 min (86,8 %) y el AUC-PR de atrasado (0,80); quedan por debajo R² (0,75), exactitud (0,79) y F1 macro (0,76). En k = 15 la superan R² (0,84), exactitud (0,83), AUC-PR (0,88) y error ≤ 5 min (93,9 %); el F1 macro queda en 0,80. El preprocesamiento reforzado no movió el error: a mitad de la vuelta el límite lo pone la información disponible.
 

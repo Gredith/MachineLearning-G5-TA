@@ -33,11 +33,12 @@ El proyecto usa solo **aprendizaje supervisado** (regresión y clasificación).
 | Notebook | Qué hace | Tiempo aprox. (12 núcleos) |
 |---|---|---|
 | `01_auditoria_datos_v2` | Auditoría de los datos (E1) | 3 min |
-| `02_preprocesamiento_variables_por_corte` | Limpieza (contraste de la regla de 60 min, GPS, unidades), evaluación de variantes de preprocesamiento, dataset vuelta × k, partición | 2 min |
+| `02_preprocesamiento_variables_por_corte` | Limpieza (contraste de la regla de 60 min, GPS, unidades), flujo de la limpieza, variantes de preprocesamiento, faltantes e imputación, experimentos adicionales, dataset vuelta × k, partición | 6 min |
 | `03_lineas_base` | Líneas base B0 a B3 | 10 s |
 | `04_regresion_P1` | 12 regresores con búsqueda en rejilla y evaluación en prueba | 15–25 min |
 | `05_clasificacion_P2` | 7 clasificadores, referencias y sensibilidad de umbrales | 5–10 min |
-| `06_analisis_resultados` | Hipótesis H1 a H6: IC por bootstrap, Wilcoxon, ablación, pérdidas, regla de 60 min, métricas frente al 80 % | 5 min |
+| `06_analisis_resultados` | Hipótesis H1 a H6: IC por bootstrap, Wilcoxon, ablación, pérdidas, regla de 60 min, métricas frente al 80 % y figuras del paper final | 6 min |
+| `07_mejoras_modelos` | Mejoras sobre los mejores modelos sin reejecutar 04–06: pérdida de Huber, red neuronal (MLP) con búsqueda equivalente, pesos balanceados en P2 y diagnóstico de sobreajuste/subajuste | 20 min |
 
 | Módulo de `src/` | Contenido |
 |---|---|
@@ -57,7 +58,7 @@ pip install -r requirements.txt
 ```
 
 1. Coloca `Times.csv` y `Monitoring.csv` en `data/raw/`.
-2. Ejecuta los notebooks de `notebooks/` en orden numérico (02 a 06 son los del E2; cada uno usa las salidas del anterior). Semilla fija: 42.
+2. Ejecuta los notebooks de `notebooks/` en orden numérico (02 a 06 son los del E2 y 07 el del paper final; cada uno usa las salidas del anterior). Semilla fija: 42.
 
 Desde la terminal, en la carpeta `notebooks/`:
 
@@ -81,13 +82,15 @@ El mismo problema se aborda con dos enfoques supervisados: **regresión** de los
 
 Gradient Boosting es el mejor modelo en validación y en prueba en los cinco cortes. En k = 9 (mitad de la vuelta) predice la desviación del punto 18 con un MAE de 2,62 min (R² 0,75; 86,8 % de vueltas con error ≤ 5 min), frente a 3,20 min de la mejor línea base, y con 2,05 min en k = 15 (R² 0,84). La clasificación alcanza una exactitud de 0,79 en k = 9 y 0,83 en k = 15. El preprocesamiento reforzado (contraste de la regla de 60 min, limpieza del GPS, interpolación y selección de variables) mantiene el error con un 30 a 42 % menos de variables. Detalle en `docs/CONTEXTO.md` y en el informe del E2.
 
+**Paper final (notebook 07):** la pérdida de Huber mejora levemente a Gradient Boosting (en k = 9, 2,58 frente a 2,62 min en prueba); una red neuronal con el mismo esfuerzo de ajuste (81 combinaciones) no lo supera, los pesos balanceados empeoran el F1 macro y el diagnóstico de ajuste no muestra sobreajuste en el modelo elegido. La demo usa Gradient Boosting con Huber: en la semana de prueba, al menos 87,6 % de vueltas con error ≤ 5 min en todos los cortes y exactitud de 0,80 o más desde k = 6.
+
 ## Entregables
 
 | Entrega | Fecha | Puntos | Estado |
 |---|---|---|---|
 | E1: Propuesta y antecedentes | 6 nov | 5 | Entregado ([docs/entregables/E1](docs/entregables/E1)) |
-| E2: Implementación y evaluación experimental | 20 nov | 5 | Listo para entregar ([docs/entregables/E2](docs/entregables/E2)) |
-| Presentación final (exposición, solución, paper) | 27 nov | 10 | Pendiente |
+| E2: Implementación y evaluación experimental | 20 nov | 5 | Entregado ([docs/entregables/E2](docs/entregables/E2)) |
+| Presentación final (exposición, solución, paper) | 27 nov | 10 | Paper en revisión ([docs/entregables/final](docs/entregables/final)); faltan las diapositivas |
 
 ## Integrantes
 
