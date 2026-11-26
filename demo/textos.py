@@ -306,7 +306,8 @@ TEXTOS = {
         "modelo_items": [
             ("Tipo de aprendizaje", "Supervisado: cada vuelta histórica trae su respuesta real en el punto 18."),
             ("Modelo", "Gradient Boosting: muchos árboles de decisión pequeños, cada uno corrige los errores del "
-                       "anterior. Fue el de menor error entre 12 algoritmos."),
+                       "anterior. Fue el de menor error entre 12 algoritmos y una red neuronal. La demo usa la pérdida "
+                       "de Huber, más robusta ante atrasos extremos, que mejoró levemente el error (notebook 07)."),
             ("Un modelo por cada k", "Con más puntos observados cambian las variables disponibles, así que cada punto de "
                                      "corte tiene su propio modelo."),
             ("Entrenamiento", "Días del 6 al 25 de enero, con validación por bloques de días en orden. La semana del 26 "
@@ -626,7 +627,8 @@ TEXTOS = {
         "modelo_items": [
             ("Type of learning", "Supervised: each past trip comes with its actual answer at point 18."),
             ("Model", "Gradient Boosting: many small decision trees, each one fixing the errors of the previous ones. It "
-                      "had the lowest error among 12 algorithms."),
+                      "had the lowest error among 12 algorithms and a neural network. The demo uses the Huber loss, more "
+                      "robust to extreme delays, which slightly improved the error (notebook 07)."),
             ("One model per k", "With more observed points the available variables change, so each cut point has its own "
                                 "model."),
             ("Training", "Days from Jan 6 to 25, validated on blocks of consecutive days. The week of Jan 26 – Feb 1 was "

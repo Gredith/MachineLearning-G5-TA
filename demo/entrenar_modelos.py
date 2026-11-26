@@ -1,7 +1,8 @@
 """Entrena y guarda los modelos que usa la demo.
 
-Reentrena Gradient Boosting (el mejor modelo de P1) para cada corte k con los hiperparámetros
-elegidos en validación (results/tables/04_hiperparametros.csv), sobre el mismo entrenamiento del
+Reentrena el mejor modelo de las pruebas para cada corte k: Gradient Boosting con pérdida de Huber,
+con los hiperparámetros elegidos en validación (results/tables/04_hiperparametros.csv) y el alpha de
+Huber elegido en el notebook 07 (results/tables/07_huber.csv), sobre el mismo entrenamiento del
 informe (6 a 25 de enero). No modifica notebooks ni resultados del proyecto.
 
 Entradas:  data/raw/Times.csv y data/raw/Monitoring.csv.
@@ -37,7 +38,7 @@ from src.variables import (CORTES, GRUPOS, columnas_detalle, columnas_modelo, co
                            indexar_gps, pasadas_por_punto)
 
 MODELO = "Gradient Boosting"
-MAE_INFORME = {4: 2.66, 6: 2.67, 9: 2.62, 12: 2.46, 15: 2.05}  # Tabla D2 del informe
+NOMBRE_MODELO = "Gradient Boosting (pérdida de Huber)"
 DIR_PROC = RAIZ / "data" / "processed"
 DIR_MODELOS = RAIZ / "demo" / "modelos"
 DIR_DATOS = RAIZ / "demo" / "datos"
@@ -72,6 +73,7 @@ def main():
     DIR_MODELOS.mkdir(parents=True, exist_ok=True)
     DIR_DATOS.mkdir(parents=True, exist_ok=True)
     hiper = pd.read_csv(RAIZ / "results" / "tables" / "04_hiperparametros.csv")
+    huber = pd.read_csv(RAIZ / "results" / "tables" / "07_huber.csv").query("modelo == 'GB Huber'").set_index("k")
 
     predicciones = []
     for k in CORTES:
@@ -82,20 +84,22 @@ def main():
         cols = columnas_modelo(x)
 
         params = json.loads(hiper.query("k == @k and modelo == @MODELO")["mejores_parametros"].item())
+        params |= {"loss": "huber", "alpha": float(huber.loc[k, "parametro"].split("= ")[1])}
         modelo = pipeline(cols, clone(REGRESORES[MODELO][0]).set_params(**params)).fit(tr[cols], tr["y"])
 
         pred = modelo.predict(te[cols])
         err = np.abs(te["y"].to_numpy() - pred)
         metricas = metricas_regresion(te["y"], pred)
-        if abs(metricas["MAE"] - MAE_INFORME[k]) > 0.01:
-            raise RuntimeError(f"k = {k}: MAE {metricas['MAE']:.3f} no coincide con el informe ({MAE_INFORME[k]})")
+        esperado = huber.loc[k, "MAE"]  # MAE de prueba del notebook 07
+        if abs(metricas["MAE"] - esperado) > 0.01:
+            raise RuntimeError(f"k = {k}: MAE {metricas['MAE']:.3f} no coincide con el notebook 07 ({esperado:.3f})")
 
         por_franja = pd.Series(err).groupby(te["franja"]).mean().round(2).to_dict()
         por_dia = pd.Series(err).groupby(te["dia_semana"].map(dict(enumerate(DIAS)))).mean().round(2).to_dict()
         joblib.dump({
             "k": k,
             "modelo": modelo,
-            "nombre_modelo": MODELO,
+            "nombre_modelo": NOMBRE_MODELO,
             "hiperparametros": params,
             "columnas": cols,
             "grupos": {g: columnas_modelo(x, (g,)) for g in GRUPOS},
@@ -105,7 +109,7 @@ def main():
         }, DIR_MODELOS / f"modelo_k{k}.joblib", compress=3)
 
         predicciones.append(te.assign(pred=pred))
-        print(f"k = {k:2d}: MAE {metricas['MAE']:.3f} (informe {MAE_INFORME[k]}), "
+        print(f"k = {k:2d}: MAE {metricas['MAE']:.3f} (notebook 07: {esperado:.3f}), "
               f"R² {metricas['R2']:.3f}, {time.time() - t0:.0f} s")
 
     # Semana de prueba para la pestaña 1: curvas de los 18 puntos + variables de cada corte.

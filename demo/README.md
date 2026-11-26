@@ -1,6 +1,6 @@
 # Demo interactiva
 
-Aplicación web local hecha con [Streamlit](https://streamlit.io) para la presentación final. Muestra el mejor modelo del proyecto, **Gradient Boosting**, prediciendo el adelanto o atraso de una vuelta en el punto de control 18 con la información disponible hasta el punto k, y resume los resultados del informe del E2. Está en español e inglés, con tema claro, oscuro o según el sistema.
+Aplicación web local hecha con [Streamlit](https://streamlit.io) para la presentación final. Muestra el mejor modelo del proyecto, **Gradient Boosting con pérdida de Huber**, prediciendo el adelanto o atraso de una vuelta en el punto de control 18 con la información disponible hasta el punto k, y resume los resultados del informe del E2. Está en español e inglés, con tema claro, oscuro o según el sistema.
 
 ## Cómo abrirla
 
@@ -18,7 +18,7 @@ Requisitos: Python 3.13 o 3.14, y `Times.csv` y `Monitoring.csv` en `data/raw/`.
    python demo/entrenar_modelos.py
    ```
 
-   Si `data/processed/` está vacío, el script construye los datos por corte desde `data/raw/` con las funciones de `src/` (no hace falta Jupyter). Luego reentrena los modelos y se detiene si el error no coincide con el informe (2,66 / 2,67 / 2,62 / 2,46 / 2,05 min).
+   Si `data/processed/` está vacío, el script construye los datos por corte desde `data/raw/` con las funciones de `src/` (no hace falta Jupyter). Luego reentrena los modelos y se detiene si el error no coincide con el del notebook 07 (2,62 / 2,59 / 2,58 / 2,40 / 2,00 min para k = 4, 6, 9, 12 y 15).
 
 3. Abrir la demo (se abre en el navegador, en http://localhost:8501):
 
@@ -46,7 +46,7 @@ Las ayudas (?) junto a las cifras explican cada métrica al pasar el cursor.
 
 ## Decisiones que conviene conocer
 
-- **Mismo modelo que el informe.** `entrenar_modelos.py` reentrena Gradient Boosting con los hiperparámetros de `results/tables/04_hiperparametros.csv` y el mismo entrenamiento (6 a 25 de enero).
+- **Mejor modelo de las pruebas.** `entrenar_modelos.py` reentrena Gradient Boosting con pérdida de Huber: los hiperparámetros de `results/tables/04_hiperparametros.csv`, el `alpha` de `results/tables/07_huber.csv` y el mismo entrenamiento (6 a 25 de enero). Requiere haber ejecutado el notebook 07. En la semana de prueba supera 0,80 en el porcentaje de vueltas con error ≤ 5 min en los cinco cortes (`results/tables/07_modelo_demo_meta80.csv`). La pestaña «Resultados del proyecto» muestra las cifras del informe, con la pérdida cuadrática.
 - **Rango de la predicción.** Es la predicción ± el error medio (MAE) del modelo con ese k en la semana de prueba.
 - **Explicación por grupos.** Cada barra reemplaza un grupo de variables por un valor típico y mide cuánto cambia la predicción: es la ablación del informe aplicada a una vuelta. Por eso un grupo puede mover una vuelta concreta aunque en promedio aporte poco (como el GPS).
 - **Vueltas en curso.** En «Probar con otros datos», las vueltas sin punto 18 también se predicen; no entran en el cálculo del error.
