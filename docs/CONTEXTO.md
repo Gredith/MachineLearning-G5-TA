@@ -159,6 +159,7 @@ Por qué P1 (cifras exploratorias del E1, con el último 25 % de días como prue
 | 26 nov 2026 | Diagnóstico de sobreajuste/subajuste de todos los modelos (entrenamiento vs. validación vs. prueba, curvas de aprendizaje) | Pedido del equipo: comprobar que la mejora sea robusta y no forzada |
 | 26 nov 2026 | La demo usa Gradient Boosting con pérdida de Huber en los cinco cortes | Mejor resultado de las pruebas; en k = 9 la validación empata (2,981 frente a 2,980) y en prueba gana en los 5 cortes. En prueba supera 0,80 en error ≤ 5 min y AUC-PR en todos los cortes, y en exactitud desde k = 6 (`07_modelo_demo_meta80.csv`) |
 | 26 nov 2026 | Párrafo de técnicas en VI-F y referencias [6]–[8] (Cerqueira et al. 2020, Hooker et al. 2021, Friedman 2001), verificadas en Crossref | Justifican la validación temporal, la importancia por permutación por grupos en lugar de SHAP y la pérdida de Huber; formato IEEE como el resto del paper |
+| 26 nov 2026 | Despliegue de la demo en Streamlit Community Cloud desde la rama `deploy/demo`, que incluye los modelos y datos de la demo (4,7 MB) y no se fusiona con `main`; acceso solo para invitados | Los datos crudos no se versionan, así que la plataforma no puede regenerar los modelos; las versiones se fijan en `demo/requirements.txt` para que los `.joblib` carguen igual. La demo contiene vueltas reales del dataset del curso: se publica solo con autorización de los docentes |
 
 Agregar aquí cada nueva decisión (fecha, qué y por qué).
 
