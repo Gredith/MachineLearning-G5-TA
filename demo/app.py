@@ -135,7 +135,7 @@ def _mantener_pestana():
 
 
 def preferencias():
-    """Idioma y tema, fijos en la esquina superior derecha y guardados en la URL (sobreviven a la recarga del tema)."""
+    """Idioma y tema, fijos en la esquina superior izquierda y guardados en la URL (sobreviven a la recarga del tema)."""
     with st.container(key="config", horizontal=True, gap="small", width="content"):
         idioma = st.segmented_control("Idioma · Language", list(IDIOMAS), format_func=IDIOMAS.get, key="idioma",
                                       default="es", required=True, bind="query-params", on_change=_mantener_pestana,
@@ -175,9 +175,13 @@ header[data-testid="stHeader"] { background: var(--papel); }
 [data-testid="stMainMenu"], #MainMenu, [data-testid="stStatusWidget"] { display: none !important; }
 div[data-testid="stElementContainer"]:has(iframe[height="0"]) { display: none; }
 
-/* Configuración global: esquina superior derecha, sobre la cabecera de Streamlit */
-.st-key-config { position: fixed; top: 0.7rem; right: 1.2rem; left: auto !important; width: auto !important;
+/* Configuración global: esquina superior izquierda del área principal, sobre la cabecera de Streamlit. Se ancla
+   al mismo contenedor que la cabecera (no a la ventana) para quedar siempre a la derecha de la barra lateral, y
+   deja libre la esquina derecha, donde Streamlit Community Cloud pone sus botones (compartir, GitHub, menú). */
+.st-key-config { position: absolute; top: 0.7rem; left: 1.2rem !important; right: auto; width: auto !important;
                  z-index: 999991; }
+/* Con la barra lateral cerrada, Streamlit pone a la izquierda el botón para abrirla: se deja su espacio. */
+.stApp:has([data-testid="stExpandSidebarButton"]) .st-key-config { left: 3.8rem !important; }
 .st-key-config [data-testid="stButtonGroup"] button { min-height: 32px; padding: 0 10px; }
 
 section[data-testid="stSidebar"] { background: var(--papel2); border-right: 1px solid var(--regla); }
@@ -185,7 +189,7 @@ section[data-testid="stSidebar"] .block-container { padding-top: 1.6rem; }
 .stApp .control-titulo { font: 700 0.78rem var(--fuente); letter-spacing: 0.08em; text-transform: uppercase;
                          color: var(--tinta); border-bottom: 1px solid var(--tinta); padding-bottom: 6px; margin-bottom: 8px; }
 
-.stApp .cabecera { border-bottom: 2px solid var(--tinta); padding: 0 220px 12px 0; margin-bottom: 4px; }
+.stApp .cabecera { border-bottom: 2px solid var(--tinta); padding: 0 0 12px 0; margin-bottom: 4px; }
 .stApp .antetitulo { font: 600 0.78rem var(--fuente); letter-spacing: 0.06em; text-transform: uppercase;
                      color: var(--acento); margin: 0 0 6px 0; }
 .stApp .cabecera h1 { font: 700 1.7rem/1.2 var(--fuente); letter-spacing: -0.01em; color: var(--tinta); margin: 0; padding: 0; }
