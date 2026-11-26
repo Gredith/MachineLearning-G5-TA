@@ -44,7 +44,7 @@ Para actualizarla: reentrenar con `python demo/entrenar_modelos.py`, volver a ag
 
 ## Qué tiene
 
-Arriba a la derecha está la configuración global: idioma (ES / EN) y tema (sistema, claro u oscuro). La barra lateral, con la selección de la vuelta, aparece solo en la pestaña «Predecir una vuelta». El idioma, el tema y la pestaña abierta quedan en la dirección de la página, así que se puede compartir el enlace con la misma vista.
+Arriba a la izquierda está la configuración global: idioma (ES / EN) y tema (sistema, claro u oscuro). La esquina derecha queda libre para los botones que agrega Streamlit Community Cloud al desplegarla. La barra lateral, con la selección de la vuelta, aparece solo en la pestaña «Predecir una vuelta». El idioma, el tema y la pestaña abierta quedan en la dirección de la página, así que se puede compartir el enlace con la misma vista.
 
 | Pestaña | Qué muestra |
 |---|---|
