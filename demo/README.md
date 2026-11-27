@@ -33,7 +33,7 @@ Se ejecuta desde `demo/` para que Streamlit lea los colores de `demo/.streamlit/
 
 ## Qué tiene
 
-Arriba a la izquierda está la configuración global: idioma (ES / EN) y tema (sistema, claro u oscuro). La esquina derecha queda libre para los botones que agrega Streamlit Community Cloud al desplegarla. La barra lateral, con la selección de la vuelta, aparece solo en la pestaña «Predecir una vuelta». El idioma, el tema y la pestaña abierta quedan en la dirección de la página, así que se puede compartir el enlace con la misma vista.
+Arriba a la izquierda está la configuración global: idioma (ES / EN), tema (sistema, claro u oscuro) y los umbrales de los estados (botón «−3 / +5 min»). La esquina derecha queda libre para los botones que agrega Streamlit Community Cloud al desplegarla. La barra lateral, con la selección de la vuelta, aparece solo en la pestaña «Predecir una vuelta». El idioma, el tema y la pestaña abierta quedan en la dirección de la página, así que se puede compartir el enlace con la misma vista.
 
 | Pestaña | Qué muestra |
 |---|---|
@@ -47,6 +47,7 @@ Las ayudas (?) junto a las cifras explican cada métrica al pasar el cursor.
 ## Decisiones que conviene conocer
 
 - **Mejor modelo de las pruebas.** `entrenar_modelos.py` reentrena Gradient Boosting con pérdida de Huber: los hiperparámetros de `results/tables/04_hiperparametros.csv`, el `alpha` de `results/tables/07_huber.csv` y el mismo entrenamiento (6 a 25 de enero). Requiere haber ejecutado el notebook 07. En la semana de prueba supera 0,80 en el porcentaje de vueltas con error ≤ 5 min en los cinco cortes (`results/tables/07_modelo_demo_meta80.csv`). La pestaña «Resultados del proyecto» muestra las cifras del informe, con la pérdida cuadrática.
+- **Umbrales de los estados.** Por defecto son los del informe: atrasado desde 5 min (criterio del TCQSM para el terminal) y adelantado desde 3 min de adelanto. Se pueden cambiar (atraso de 1 a 15 min, adelanto de 1 a 10) para adaptar la lectura a otra tolerancia: el estado se calcula a partir de los minutos que predice el modelo, así que no hace falta reentrenar. Afectan a «Predecir una vuelta» (estado, sugerencia y franja «a tiempo» del gráfico) y a «Probar con otros datos» (estados y porcentaje de estados acertados); la pestaña «Resultados del proyecto» siempre usa 5 y 3. Si un umbral es menor que el error típico del modelo, la demo avisa que el estado es poco fiable. Los valores distintos de los del informe quedan en la dirección de la página.
 - **Rango de la predicción.** Es la predicción ± el error medio (MAE) del modelo con ese k en la semana de prueba.
 - **Explicación por grupos.** Cada barra reemplaza un grupo de variables por un valor típico y mide cuánto cambia la predicción: es la ablación del informe aplicada a una vuelta. Por eso un grupo puede mover una vuelta concreta aunque en promedio aporte poco (como el GPS).
 - **Vueltas en curso.** En «Probar con otros datos», las vueltas sin punto 18 también se predicen; no entran en el cálculo del error.
