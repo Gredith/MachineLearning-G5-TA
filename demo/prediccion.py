@@ -17,7 +17,8 @@ from src.variables import construir_corte  # noqa: E402
 COLUMNAS_TIMES = ("id", "date", "vehicle_id_id", "lap", "start_time", "end_time", "difference_time")
 FIN_ENTRENAMIENTO = pd.Timestamp("2025-01-25")
 CORTES = (4, 6, 9, 12, 15)
-UMBRAL_ATRASO, UMBRAL_ADELANTO = 5, 3  # mismos umbrales que P2 en el informe
+UMBRAL_ATRASO, UMBRAL_ADELANTO = 5, 3  # valores por defecto: los de P2 en el informe (TCQSM y datos)
+RANGO_ATRASO, RANGO_ADELANTO = (1, 15), (1, 10)  # límites de los controles de la demo, en minutos
 CATEGORICAS = ("hor_dia_semana", "ctx_vehiculo")
 DIAS_ES = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]  # claves de mae_por_dia
 
@@ -35,11 +36,14 @@ def predecir(paquete, filas):
     return paquete["modelo"].predict(filas[paquete["columnas"]])
 
 
-def clasificar(minutos):
-    """Estado de la vuelta: 'atrasado', 'a tiempo' o 'adelantado' (los textos los traduce app.py)."""
-    if minutos >= UMBRAL_ATRASO:
+def clasificar(minutos, atraso=UMBRAL_ATRASO, adelanto=UMBRAL_ADELANTO):
+    """Estado de la vuelta: 'atrasado', 'a tiempo' o 'adelantado' (los textos los traduce app.py).
+
+    Los umbrales solo convierten los minutos predichos en un estado: cambiarlos no requiere reentrenar el modelo.
+    """
+    if minutos >= atraso:
         return "atrasado"
-    if minutos <= -UMBRAL_ADELANTO:
+    if minutos <= -adelanto:
         return "adelantado"
     return "a tiempo"
 
@@ -144,10 +148,14 @@ def predecir_vueltas(vueltas, paquete):
         x[c] = np.nan
     x["pred"] = predecir(paquete, x)
     x.loc[x["id"].isin(sin_final), "y"] = np.nan
-    x["estado"] = x["pred"].map(clasificar)
-    x["estado_real"] = x["y"].map(lambda v: clasificar(v) if pd.notna(v) else None)
     x["error"] = (x["y"] - x["pred"]).abs()
-    return x
+    return asignar_estados(x)
+
+
+def asignar_estados(x, atraso=UMBRAL_ATRASO, adelanto=UMBRAL_ADELANTO):
+    """Estado previsto y real de cada vuelta con los umbrales dados (el real queda vacío si no hay punto 18)."""
+    return x.assign(estado=x["pred"].map(lambda v: clasificar(v, atraso, adelanto)),
+                    estado_real=x["y"].map(lambda v: clasificar(v, atraso, adelanto) if pd.notna(v) else None))
 
 
 def dias_de_entrenamiento(vueltas):

@@ -37,7 +37,7 @@ El proyecto usa solo **aprendizaje supervisado** (regresión y clasificación).
 | `03_lineas_base` | Líneas base B0 a B3 | 10 s |
 | `04_regresion_P1` | 12 regresores con búsqueda en rejilla y evaluación en prueba | 15–25 min |
 | `05_clasificacion_P2` | 7 clasificadores, referencias y sensibilidad de umbrales | 5–10 min |
-| `06_analisis_resultados` | Hipótesis H1 a H6: IC por bootstrap, Wilcoxon, ablación, pérdidas, regla de 60 min, métricas frente al 80 % y figuras del paper final | 6 min |
+| `06_analisis_resultados` | Hipótesis H1 a H6: IC por bootstrap, Wilcoxon, ablación, pérdidas, regla de 60 min, métricas frente al 80 % y figuras del paper final (incluidos el esquema por corte, los umbrales de P2 y la clasificación en k = 9) | 6 min |
 | `07_mejoras_modelos` | Mejoras sobre los mejores modelos sin reejecutar 04–06: pérdida de Huber, red neuronal (MLP) con búsqueda equivalente, pesos balanceados en P2 y diagnóstico de sobreajuste/subajuste | 20 min |
 
 | Módulo de `src/` | Contenido |

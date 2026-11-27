@@ -14,6 +14,19 @@ TEXTOS = {
         "idioma": "Idioma",
         "tema": "Tema",
         "tema_sistema": "Sistema",
+        "umbrales_titulo": "Umbrales de los estados",
+        "umbrales_ayuda": "Desde cuántos minutos una vuelta cuenta como atrasada o adelantada",
+        "umbrales_texto": "Por defecto, los del informe: atrasado desde 5 min (criterio del TCQSM para el terminal) y "
+                          "adelantado desde 3 min de adelanto. Cambiarlos no reentrena el modelo: solo cambia cómo se "
+                          "lee la predicción en minutos. La pestaña «Resultados del proyecto» siempre usa 5 y 3.",
+        "umbral_atraso": "Atrasado desde (min de atraso)",
+        "umbral_adelanto": "Adelantado desde (min de adelanto)",
+        "restablecer": "Usar los del informe (5 y 3)",
+        "chip_umbral": "Umbral menor que el error típico ({mae} min): el estado es poco fiable",
+        "estado_archivo": "Con los umbrales −{a} / +{b} min, el estado previsto coincide con el real en el **{pct} %** "
+                          "de esas vueltas.",
+        "umbral_bajo": "Hay un umbral menor que el error medio del modelo en este archivo ({mae} min): muchas vueltas "
+                       "cambiarán de estado por errores pequeños.",
         "tema_claro": "Claro",
         "tema_oscuro": "Oscuro",
         "sin_modelos": "No se encontraron los modelos. Ejecuta primero `python demo/entrenar_modelos.py` desde la raíz "
@@ -70,7 +83,7 @@ TEXTOS = {
         "serie_despues": "Lo que pasó después",
         "serie_pred": "Predicción del modelo",
         "serie_real": "Valor real",
-        "zona_tiempo": "zona «a tiempo» (−3 a +5 min)",
+        "zona_tiempo": "zona «a tiempo» (−{a} a +{b} min)",
         "ahora": "ahora (punto {k})",
         "eje_punto": "Punto de control",
         "eje_minutos": "Minutos respecto al horario (− adelanto, + atraso)",
@@ -258,7 +271,8 @@ TEXTOS = {
         "tt_predicha": "Predicha",
         "tt_vueltas": "Vueltas",
         "tt_pct_fila": "% de la fila",
-        "pie_confusion": "Número de vueltas y porcentaje de cada clase real. La mayor confusión es entre «a tiempo» y "
+        "pie_confusion": "Con los umbrales del informe (atrasado ≥ 5 min, adelantado ≥ 3 min). Número de vueltas y "
+                         "porcentaje de cada clase real. La mayor confusión es entre «a tiempo» y "
                          "«atrasado». Convertir la predicción en minutos a estados da casi lo mismo (exactitud 0,796).",
         "sec_meta": "Métricas frente a la meta de 0,80",
         "meta_entradilla": "En negrita, las métricas que superan la meta de los docentes.",
@@ -345,6 +359,19 @@ TEXTOS = {
         "idioma": "Language",
         "tema": "Theme",
         "tema_sistema": "System",
+        "umbrales_titulo": "Status thresholds",
+        "umbrales_ayuda": "How many minutes make a trip count as late or early",
+        "umbrales_texto": "By default, the report's: late from 5 min (TCQSM criterion for the terminal) and early from "
+                          "3 min ahead. Changing them does not retrain the model: it only changes how the minutes "
+                          "prediction is read. The «Project results» tab always uses 5 and 3.",
+        "umbral_atraso": "Late from (min late)",
+        "umbral_adelanto": "Early from (min early)",
+        "restablecer": "Use the report's (5 and 3)",
+        "chip_umbral": "Threshold below the typical error ({mae} min): the status is unreliable",
+        "estado_archivo": "With thresholds −{a} / +{b} min, the predicted status matches the actual one in **{pct}%** "
+                          "of those trips.",
+        "umbral_bajo": "A threshold is below the model's mean error on this file ({mae} min): many trips will change "
+                       "status because of small errors.",
         "tema_claro": "Light",
         "tema_oscuro": "Dark",
         "sin_modelos": "Models not found. First run `python demo/entrenar_modelos.py` from the repository root.",
@@ -396,7 +423,7 @@ TEXTOS = {
         "serie_despues": "What happened next",
         "serie_pred": "Model prediction",
         "serie_real": "Actual value",
-        "zona_tiempo": "on-time zone (−3 to +5 min)",
+        "zona_tiempo": "on-time zone (−{a} to +{b} min)",
         "ahora": "now (point {k})",
         "eje_punto": "Control point",
         "eje_minutos": "Minutes vs. schedule (− early, + late)",
@@ -580,7 +607,8 @@ TEXTOS = {
         "tt_predicha": "Predicted",
         "tt_vueltas": "Trips",
         "tt_pct_fila": "% of row",
-        "pie_confusion": "Number of trips and share of each actual class. Most confusion is between “on time” and "
+        "pie_confusion": "With the report's thresholds (late ≥ 5 min, early ≥ 3 min). Number of trips and share of "
+                         "each actual class. Most confusion is between “on time” and "
                          "“late”. Turning the minutes prediction into statuses gives almost the same (accuracy 0.796).",
         "sec_meta": "Metrics vs. the 0.80 target",
         "meta_entradilla": "In bold, the metrics above the instructors' target.",
@@ -679,7 +707,7 @@ HIPOTESIS = {
         ("H2", "Los árboles superan a los lineales", "si", "GB y RF < Ridge en los 5 cortes (p < 0,001)"),
         ("H3", "El error baja al observar más puntos", "parcial", "Igual de k = 4 a 9; baja en 12 y 15"),
         ("H4", "El GPS aporta información", "no", "Cambia el MAE en ± 0,01 min"),
-        ("H5", "Las pérdidas absoluta y Huber rinden mejor", "parcial", "Absoluta mejor en prueba, no en validación"),
+        ("H5", "Las pérdidas absoluta y Huber rinden mejor", "si", "Huber: −0,03 a −0,05 min en validación, −0,04 a −0,07 en prueba"),
         ("H6", "El contexto de flota ayuda en horas de más atraso", "parcial", "−0,24 min de 16 a 19 h; −0,33 los sábados"),
     ],
     "en": [
@@ -687,7 +715,7 @@ HIPOTESIS = {
         ("H2", "Tree models beat linear models", "si", "GB and RF < Ridge at all 5 cut points (p < 0.001)"),
         ("H3", "Error drops as more points are observed", "parcial", "Flat from k = 4 to 9; drops at 12 and 15"),
         ("H4", "GPS adds information", "no", "Changes MAE by ± 0.01 min"),
-        ("H5", "Absolute and Huber losses do better", "parcial", "Absolute better on test, not on validation"),
+        ("H5", "Absolute and Huber losses do better", "si", "Huber: −0.03 to −0.05 min on validation, −0.04 to −0.07 on test"),
         ("H6", "Fleet context helps in the most delayed hours", "parcial", "−0.24 min from 4 to 7 pm; −0.33 on Saturdays"),
     ],
 }
