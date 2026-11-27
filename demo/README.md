@@ -31,6 +31,17 @@ Requisitos: Python 3.13 o 3.14, y `Times.csv` y `Monitoring.csv` en `data/raw/`.
 
 Se ejecuta desde `demo/` para que Streamlit lea los colores de `demo/.streamlit/config.toml`. Se usa `python -m streamlit` porque en Windows el comando `streamlit` a veces no está en el PATH.
 
+## Despliegue en Streamlit Community Cloud (rama `deploy/demo`)
+
+La rama `deploy/demo` es la única que incluye los modelos entrenados (`demo/modelos/`) y los datos de la demo (`demo/datos/`), agregados con `git add -f`; no se fusiona con `main`. Además tiene `demo/requirements.txt` con las versiones exactas del entrenamiento y una copia del tema en `.streamlit/config.toml` (la plataforma ejecuta la app desde la raíz del repositorio).
+
+1. Entrar en [share.streamlit.io](https://share.streamlit.io) con la cuenta de GitHub y autorizar el acceso al repositorio.
+2. *Create app*: repositorio del proyecto, rama `deploy/demo`, archivo principal `demo/app.py`.
+3. En *Advanced settings*, Python 3.14 (con el que se entrenaron los modelos). Si no está disponible, reentrenar con la versión elegida y actualizar `demo/requirements.txt`.
+4. En *Sharing*, dejar la app **solo para invitados** (docentes y equipo): contiene vueltas reales del dataset del curso. Hacerla pública solo con autorización de los docentes.
+
+Para actualizarla: reentrenar con `python demo/entrenar_modelos.py`, volver a agregar los archivos con `git add -f demo/modelos demo/datos` y hacer push a `deploy/demo`; la app se vuelve a desplegar sola.
+
 ## Qué tiene
 
 Arriba a la izquierda está la configuración global: idioma (ES / EN), tema (sistema, claro u oscuro) y los umbrales de los estados (botón «−3 / +5 min»). La esquina derecha queda libre para los botones que agrega Streamlit Community Cloud al desplegarla. La barra lateral, con la selección de la vuelta, aparece solo en la pestaña «Predecir una vuelta». El idioma, el tema y la pestaña abierta quedan en la dirección de la página, así que se puede compartir el enlace con la misma vista.

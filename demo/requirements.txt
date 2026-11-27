@@ -1,0 +1,9 @@
+# Dependencias solo de la demo, para el despliegue en Streamlit Community Cloud (rama deploy/demo).
+# Versiones fijas: los modelos de demo/modelos/ se entrenaron con ellas (Python 3.14.2) y un .joblib
+# puede fallar o predecir distinto con otra versión de scikit-learn.
+streamlit==1.67.0
+scikit-learn==1.9.1
+numpy==2.5.5
+pandas==3.1.1
+joblib==1.6.0
+altair==6.3.0
