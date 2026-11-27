@@ -134,8 +134,47 @@ def _mantener_pestana():
     st.session_state["_idioma_anterior"] = st.session_state["idioma"]
 
 
+def _umbral_de_url(clave, defecto, rango):
+    """Umbral leído de la URL; si falta o no es válido se usa el valor por defecto."""
+    try:
+        valor = int(st.query_params.get(clave, defecto))
+    except ValueError:
+        return defecto
+    return valor if rango[0] <= valor <= rango[1] else defecto
+
+
+def _restablecer_umbrales():
+    st.session_state.update(atraso=p.UMBRAL_ATRASO, adelanto=p.UMBRAL_ADELANTO)
+
+
+def umbrales_config(tr):
+    """Umbrales de los estados (atrasado / adelantado). Solo cambian cómo se lee la predicción, no el modelo."""
+    st.session_state.setdefault("atraso", _umbral_de_url("atraso", p.UMBRAL_ATRASO, p.RANGO_ATRASO))
+    st.session_state.setdefault("adelanto", _umbral_de_url("adelanto", p.UMBRAL_ADELANTO, p.RANGO_ADELANTO))
+    atraso, adelanto = st.session_state["atraso"], st.session_state["adelanto"]
+    with st.popover(f"−{adelanto} / +{atraso} min", icon=":material/tune:", help=tr("umbrales_ayuda")):
+        html(f'<div class="control-titulo">{tr("umbrales_titulo")}</div>')
+        st.caption(tr("umbrales_texto"))
+        st.number_input(tr("umbral_atraso"), *p.RANGO_ATRASO, step=1, key="atraso")
+        st.number_input(tr("umbral_adelanto"), *p.RANGO_ADELANTO, step=1, key="adelanto")
+        st.button(tr("restablecer"), icon=":material/restart_alt:", on_click=_restablecer_umbrales, width="stretch",
+                  disabled=(atraso, adelanto) == (p.UMBRAL_ATRASO, p.UMBRAL_ADELANTO))
+    # En la URL solo si difieren de los del informe, para compartir el enlace con la misma vista.
+    for clave, defecto in (("atraso", p.UMBRAL_ATRASO), ("adelanto", p.UMBRAL_ADELANTO)):
+        if st.session_state[clave] != defecto:
+            st.query_params[clave] = st.session_state[clave]
+        elif clave in st.query_params:
+            del st.query_params[clave]
+
+
+def umbrales():
+    """(atraso, adelanto) elegidos en la configuración, en minutos."""
+    return st.session_state["atraso"], st.session_state["adelanto"]
+
+
 def preferencias():
-    """Idioma y tema, fijos en la esquina superior izquierda y guardados en la URL (sobreviven a la recarga del tema)."""
+    """Idioma, tema y umbrales, fijos en la esquina superior izquierda y guardados en la URL (sobreviven a la recarga
+    del tema)."""
     with st.container(key="config", horizontal=True, gap="small", width="content"):
         idioma = st.segmented_control("Idioma · Language", list(IDIOMAS), format_func=IDIOMAS.get, key="idioma",
                                       default="es", required=True, bind="query-params", on_change=_mantener_pestana,
@@ -145,6 +184,7 @@ def preferencias():
             st.session_state["tema"] = st.query_params.get("tema") if st.query_params.get("tema") in TEMAS else "sistema"
         tema = st.segmented_control("Tema · Theme", list(TEMAS), format_func=lambda m: TEMAS[m][1], key="tema",
                                     required=True, label_visibility="collapsed")
+        umbrales_config(Traductor(idioma))
     st.query_params["tema"] = tema
     st.session_state.setdefault("_idioma_anterior", idioma)
 
@@ -182,7 +222,8 @@ div[data-testid="stElementContainer"]:has(iframe[height="0"]) { display: none; }
                  z-index: 999991; }
 /* Con la barra lateral cerrada, Streamlit pone a la izquierda el botón para abrirla: se deja su espacio. */
 .stApp:has([data-testid="stExpandSidebarButton"]) .st-key-config { left: 3.8rem !important; }
-.st-key-config [data-testid="stButtonGroup"] button { min-height: 32px; padding: 0 10px; }
+.st-key-config [data-testid="stButtonGroup"] button, .st-key-config [data-testid="stPopover"] button {
+    min-height: 32px; padding: 0 10px; }
 
 section[data-testid="stSidebar"] { background: var(--papel2); border-right: 1px solid var(--regla); }
 section[data-testid="stSidebar"] .block-container { padding-top: 1.6rem; }
@@ -371,15 +412,16 @@ def notas_faltantes(curva, k):
 
 
 def grafico_curva(curva, k, pred, mae):
+    atraso, adelanto = umbrales()
     puntos = np.arange(1, 19)
     dif = curva[[f"dif_{j}" for j in puntos]].to_numpy(dtype=float)
     s_obs, s_hueco, s_despues, s_pred, s_real = (t("serie_obs"), t("serie_hueco"), t("serie_despues"),
                                                  t("serie_pred"), t("serie_real"))
     obs = pd.DataFrame({"punto": puntos[:k], "minutos": dif[:k], "serie": s_obs, "tramo": "observado"})
     capas = [
-        alt.Chart(pd.DataFrame({"y0": [-p.UMBRAL_ADELANTO], "y1": [p.UMBRAL_ATRASO]})).mark_rect(
+        alt.Chart(pd.DataFrame({"y0": [-adelanto], "y1": [atraso]})).mark_rect(
             color=PAL["zona"], opacity=0.9).encode(y="y0:Q", y2="y1:Q"),
-        alt.Chart(pd.DataFrame({"t": [t("zona_tiempo")], "x": [1], "y": [4.4]})).mark_text(
+        alt.Chart(pd.DataFrame({"t": [t("zona_tiempo", a=adelanto, b=atraso)], "x": [1], "y": [atraso - 0.6]})).mark_text(
             align="left", color=PAL["tinta3"], fontSize=11).encode(x="x:Q", y="y:Q", text="t:N"),
         alt.Chart(pd.DataFrame({"x": [k]})).mark_rule(strokeDash=[4, 4], color=PAL["gris"]).encode(x="x:Q"),
     ]
@@ -415,7 +457,7 @@ def grafico_curva(curva, k, pred, mae):
                alt.Tooltip("minutos:Q", title=t("tt_minutos"), format=".1f")]
     eje_x = alt.X("punto:Q", title=t("eje_punto"), scale=alt.Scale(domain=[0.5, 18.5], nice=False),
                   axis=alt.Axis(values=list(range(1, 19)), format="d", grid=False))
-    valores = np.r_[dif[~np.isnan(dif)], pred - mae, pred + mae, -p.UMBRAL_ADELANTO, p.UMBRAL_ATRASO]
+    valores = np.r_[dif[~np.isnan(dif)], pred - mae, pred + mae, -adelanto, atraso]
     y_min, y_max = np.floor(valores.min()) - 2, np.ceil(valores.max()) + 2
     eje_y = alt.Y("minutos:Q", title=t("eje_minutos"), scale=alt.Scale(domain=[y_min, y_max], nice=False))
 
@@ -489,7 +531,7 @@ def pestana_vuelta(paquetes, curvas, variables, vueltas):
     curva = curvas[curvas["id"] == id_vuelta].iloc[0]
     pred = float(p.predecir(paquete, fila)[0])
     real = float(fila["y"].iloc[0])
-    estado = p.clasificar(pred)
+    estado = p.clasificar(pred, *umbrales())
     metricas = paquete["metricas_prueba"]
     mae = metricas["MAE"]
     hora = fila["hora_inicio"].iloc[0]
@@ -499,6 +541,8 @@ def pestana_vuelta(paquetes, curvas, variables, vueltas):
     senales = p.senales(paquete, fila)
     titulo = html_lib.escape(t("chips_ayuda"), quote=True)
     chips = "".join(f'<span class="chip" title="{titulo}">{texto_senal(c, v)}</span>' for c, v in senales)
+    if min(umbrales()) < mae:
+        chips += f'<span class="chip">{t("chip_umbral", mae=t.num(mae))}</span>'
     html(f'<div class="nota"><div class="rotulo">{t("sugerencia")}</div><p>{t(f"sug_{estado}")}</p></div>'
          + (f'<div class="chips">{chips}</div>' if chips else ""))
 
@@ -507,7 +551,7 @@ def pestana_vuelta(paquetes, curvas, variables, vueltas):
     with izquierda:
         cifras([
             (t("cifra_pred"), minutos(pred), t("ayuda_pred"), t("pred_detalle", mae=t.num(mae), k=k)),
-            (t("cifra_real"), minutos(real, 0), t("ayuda_real"), t("real_detalle", estado=t.estado(p.clasificar(real)))),
+            (t("cifra_real"), minutos(real, 0), t("ayuda_real"), t("real_detalle", estado=t.estado(p.clasificar(real, *umbrales())))),
             (t("cifra_error"), minutos(abs(real - pred)), t("ayuda_error")),
         ], vertical=True)
         html(f'<p class="pie">{t("salida", hora=f"{int(hora):02d}:{round(hora % 1 * 60):02d}")}</p>')
@@ -635,6 +679,7 @@ def pestana_archivo():
     origen = t("nombre_ejemplo") if activo["nombre"] == "__ejemplo__" else activo["nombre"]
     with st.spinner(t("calculando")):
         x, dias_vistos = procesar_archivo(activo["contenido"], k)
+    x = p.asignar_estados(x, *umbrales())
 
     con_real = x["y"].notna()
     conteo = x["estado"].value_counts()
@@ -649,7 +694,12 @@ def pestana_archivo():
             (t("prev_tiempo"), previstas("a tiempo"), None), (t("prev_adelantadas"), previstas("adelantado"), None)])
     if con_real.any():
         errores = x.loc[con_real, "error"]
-        html(f'<p class="entradilla" style="margin-top:18px">{en_linea(t("error_archivo", n=t.entero(con_real.sum()), mae=t.num(errores.mean(), 2), pct=t.num(100 * (errores <= 5).mean(), 0)))}</p>')
+        aciertos = (x.loc[con_real, "estado"] == x.loc[con_real, "estado_real"]).mean()
+        atraso, adelanto = umbrales()
+        html(f'<p class="entradilla" style="margin-top:18px">{en_linea(t("error_archivo", n=t.entero(con_real.sum()), mae=t.num(errores.mean(), 2), pct=t.num(100 * (errores <= 5).mean(), 0)))} '
+             f'{en_linea(t("estado_archivo", pct=t.num(100 * aciertos, 0), a=adelanto, b=atraso))}</p>')
+        if min(atraso, adelanto) < errores.mean():
+            nota(t("atencion"), t("umbral_bajo", mae=t.num(errores.mean())))
     if dias_vistos:
         nota(t("atencion"), t("dias_vistos", dias=t.lista(t.fecha(d) for d in dias_vistos)))
     with st.expander(t("detalles")):
